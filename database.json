@@ -1,0 +1,8 @@
+{
+    "dev": {
+      "driver": "mysql",
+      "user": "hafiz",
+      "password":"hafiz",
+      "database":"game_store"
+    }
+  }

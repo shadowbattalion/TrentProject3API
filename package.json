@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/shadowbattalion/TrentProject3API#readme",
   "dependencies": {
+    "db-migrate": "^0.11.13",
+    "db-migrate-mysql": "^2.2.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "hbs": "^4.2.0",
-    "nodemon": "^2.0.15",
+    "mysql": "^2.18.1",
     "wax-on": "^1.2.2"
   }
 }
