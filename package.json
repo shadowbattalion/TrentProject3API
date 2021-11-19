@@ -1,0 +1,26 @@
+{
+  "name": "trentproject3api",
+  "version": "1.0.0",
+  "description": "![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shadowbattalion/TrentProject3API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shadowbattalion/TrentProject3API/issues"
+  },
+  "homepage": "https://github.com/shadowbattalion/TrentProject3API#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "hbs": "^4.2.0",
+    "nodemon": "^2.0.15",
+    "wax-on": "^1.2.2"
+  }
+}
