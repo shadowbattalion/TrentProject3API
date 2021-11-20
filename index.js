@@ -24,13 +24,15 @@ app.use(
 );
 
 //routes
-const home_routes = require('./routes/home');
+const home_route = require('./routes/home');
+const games_route = require('./routes/games')
 
 
 
 async function main() {
 
-    app.use('/', home_routes)
+    app.use('/', home_route)
+    app.use('/list_games', games_route)
 
 
  

@@ -15,11 +15,21 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return null;
+  return db.createTable('games',{
+    id:{type: 'int', primaryKey:true, autoIncrement:true, unsigned: true},
+    title:{type: 'string', length:50},
+    cost:{type: 'int'},
+    discount:{type: 'real'},
+    recommended_requirement:{type: 'string', length:600},
+    minimum_requirement:{type: 'string', length:600},
+    banner_image:{type: 'string', length:500},
+    company_name:{type: 'string', length:200},
+    added_date:{type: 'datetime'}
+  })
 };
 
 exports.down = function(db) {
-  return null;
+  return db.dropTable('games');
 };
 
 exports._meta = {

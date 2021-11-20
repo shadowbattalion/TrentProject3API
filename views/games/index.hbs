@@ -1,0 +1,55 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Cost</th>
+            <th>Discount</th>
+            <th>Recommended Requirement</th>
+            <th>Minimum Requirement</th>
+            <th>Banner Image</th>
+            <th>Company Name</th>
+            <th>Added Date</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        {{#each games}}
+            <tr>
+                <td>
+                    {{this.id}}
+                </td>
+                <td>
+                    {{this.title}}
+                </td>
+                <td>
+                    {{this.cost}}
+                </td>
+                <td>
+                    {{this.discount}}
+                </td>
+                <td>
+                    {{this.recommended_requirement}}
+                </td>
+                <td>
+                    {{this.minimum_requirement}}
+                </td>
+                <td>
+                    <img src="{{this.banner_image}}" class="img-fluid"/> 
+                </td>
+                <td>
+                    {{this.company_name}}
+                </td>
+                <td>
+                    {{this.added_date}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/block}}
+
+{{/extends}}
