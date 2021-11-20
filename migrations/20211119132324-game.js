@@ -20,11 +20,12 @@ exports.up = function(db) {
     title:{type: 'string', length:50},
     cost:{type: 'int'},
     discount:{type: 'real'},
+    description:{type: 'string', length:600},
     recommended_requirement:{type: 'string', length:600},
     minimum_requirement:{type: 'string', length:600},
-    banner_image:{type: 'string', length:500},
-    company_name:{type: 'string', length:200},
-    added_date:{type: 'datetime'}
+    banner_image:{type: 'string', length:300},
+    company_name:{type: 'string', length:100},
+    added_date:{type: 'date'}
   })
 };
 

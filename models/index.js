@@ -1,10 +1,10 @@
 const bookhself = require('../bookshelf')
 
 
-const Games = bookhself.model('Games',{
+const Game = bookhself.model('Games',{
     tableName:'games'
 })
 
 
 
-module.exports={Games}
+module.exports={Game}
