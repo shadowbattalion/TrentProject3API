@@ -32,7 +32,7 @@ const games_route = require('./routes/games')
 async function main() {
 
     app.use('/', home_route)
-    app.use('/list_games', games_route)
+    app.use('/list-games', games_route)
 
 
  

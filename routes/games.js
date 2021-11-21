@@ -41,9 +41,8 @@ router.post('/add',async(req,res)=>{
         "success": async(form)=>{
             const game=new Game()
             game.set(form.data)
-            // console.log(form.data.added_date)
             await game.save()
-            res.redirect('/list_games')
+            res.redirect('/list-games')
         },
         "error": async(form)=>{
             res.render('games/add', {
@@ -95,6 +94,8 @@ router.get('/:game_id/update', async(req,res)=>{
 router.post('/:game_id/update', async(req,res)=>{
 
 
+    const game_id = req.params.game_id
+
     const game = await Game.where({
         'id':game_id
     }).fetch({
@@ -104,7 +105,19 @@ router.post('/:game_id/update', async(req,res)=>{
     
     const game_form=create_game_form()
 
-    
+    game_form.handle(req,{
+        "success": async (form) => {
+            game.set(form.data)
+            game.save()
+            res.redirect('/list-games')
+        },
+        "error": async(form)=>{
+            res.render('games/update', {
+                "form":form.toHTML(bootstrap_field),
+                "game":game.toJSON()
+            })
+        }
+    })
 
 
 
@@ -113,5 +126,37 @@ router.post('/:game_id/update', async(req,res)=>{
 })
 
 
+router.get('/:game_id/delete', async(req,res)=>{
+
+
+    const game_id = req.params.game_id
+
+    const game = await Game.where({
+        'id':game_id
+    }).fetch({
+        require:true
+    })
+
+    res.render('games/delete', {
+        'game': game.toJSON()
+    })
+})
+
+
+
+router.post('/:game_id/delete', async(req,res)=>{
+
+
+    const game_id = req.params.game_id
+
+    const game = await Game.where({
+        'id':game_id
+    }).fetch({
+        require:true
+    })
+
+    await game.destroy();
+    res.redirect('/list-games')
+})
 
 module.exports = router

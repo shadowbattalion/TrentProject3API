@@ -50,10 +50,15 @@
                 <td>
                     {{this.added_date}}
                 </td>
+                <td>
+                <a href="/list-games/{{this.id}}/update" class="btn btn-primary btn-sm">Update</a>
+                <a href="/list-games/{{this.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
+            </td>
             </tr>
         {{/each}}
     </tbody>
 </table>
+<a href="/list-games/add" class="btn btn-danger btn-sm">Add</a>
 {{/block}}
 
 {{/extends}}
