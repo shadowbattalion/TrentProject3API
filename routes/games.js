@@ -8,25 +8,57 @@ const {bootstrap_field , create_game_form} = require('../forms')
 
 
 
+
+
+
+
 router.get('/', async(req,res)=>{
 
     let games = await Game.collection().fetch()
     //modify date format
-    let games_modified_date=[]
+    let games_json_list=[]
     for(let game of games.toJSON()){
         game.added_date=game.added_date.toLocaleDateString('en-GB')
-        games_modified_date.push(game)
+        games_json_list.push(game)
     }
    
     res.render('games/index',{
-        'games':games_modified_date
+        'games':games_json_list
     })
 
 
 })
 
 
+router.get('/:game_id/details', async(req,res)=>{
+
+    
+
+    const game_id = req.params.game_id
+
+    const game = await Game.where({
+        'id':game_id
+    }).fetch({
+        require:true
+    })
+
+
+    //modify date format
+    game_json = game.toJSON()
+    game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
+
+    res.render('games/game-details',{
+        'game':game_json
+    })
+
+
+})
+
+
+
+
 router.get('/add', async(req,res)=>{
+    console.log("TEST")
     const game_form = create_game_form()
     res.render('games/add',{
         "form":game_form.toHTML(bootstrap_field)
@@ -36,6 +68,7 @@ router.get('/add', async(req,res)=>{
 
 
 router.post('/add',async(req,res)=>{
+    
     const game_form = create_game_form()
     game_form.handle(req,{
         "success": async(form)=>{
@@ -109,7 +142,7 @@ router.post('/:game_id/update', async(req,res)=>{
         "success": async (form) => {
             game.set(form.data)
             game.save()
-            res.redirect('/list-games')
+            res.redirect(`/list-games/${game_id}/details`)
         },
         "error": async(form)=>{
             res.render('games/update', {

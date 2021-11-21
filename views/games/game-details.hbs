@@ -1,0 +1,26 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+
+    <ul>
+        <li>ID: {{game.id}}</li>
+        <li>Title: {{game.title}}</li>
+        <li>Cost: {{game.cost}}</li>
+        <li>Discount: {{game.discount}}</li>
+        <li>Description: {{game.description}}</li>
+        <li>Recommended Requirement: {{game.recommended_requirement}}</li>
+        <li>Minimum Requirement: {{game.minimum_requirement}}</li>
+        <li>Banner Image: <img src="{{game.banner_image}}" class="img-fluid"/></li>
+        <li>Company Name: {{game.company_name}}</li>
+        <li>Added Date: {{game.added_date}}</li>
+    </ul>
+
+           
+    <a href="/list-games/{{game.id}}/update" class="btn btn-primary btn-sm">Update</a>
+    <a href="/list-games/{{game.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
+    <a href="/list-games" class="btn btn-danger btn-sm">Back</a>
+
+
+{{/block}}
+
+{{/extends}}
