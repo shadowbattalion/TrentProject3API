@@ -39,9 +39,7 @@ router.get('/:game_id/details', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['category'],
-        withRelated:['content_tags'],
-        withRelated:['images']
+        withRelated:['category','content_tags', 'images']
     })
 
 
@@ -100,7 +98,7 @@ router.post('/add',async(req,res)=>{
             let saved_object = await game.save()
             
             for (let url of [url_1, url_2, url_3, url_4, url_5]){
-                console.log(url)
+               
                 let image = new Image({'game_id':saved_object.attributes.id, 'url':url})
                 await image.save()
             }
@@ -137,8 +135,7 @@ router.get('/:game_id/update', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['content_tags'],
-        withRelated:['images']
+        withRelated:['content_tags','images']
     })
 
     
@@ -172,7 +169,8 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.added_date.value = game.get('added_date')
     game_form.fields.category_id.value = game.get('category_id')
     let content_tags_chosen = await game.related('content_tags').pluck('id')
-    game_form.fields.content_tags.value= content_tags_chosen
+   
+    game_form.fields.content_tags.value = content_tags_chosen
 
     res.render('games/update',{
         'form':game_form.toHTML(bootstrap_field),
@@ -191,7 +189,8 @@ router.post('/:game_id/update', async(req,res)=>{
     const game = await Game.where({
         'id':game_id
     }).fetch({
-        require:true
+        require:true,
+        withRelated:['content_tags']
     })
 
     
@@ -239,12 +238,15 @@ router.post('/:game_id/update', async(req,res)=>{
             //ask paul
 
    
-            
-            let content_tag_id = content_tags.split(',')
-            let current_tags = await game.related('content_tags').pluck('id')
-            let removing_tags = current_tags.filter((tag_id)=>content_tag_id.includes(tag_id)===false)
-            await game.content_tags().detach(removing_tags)
-            await game.content_tags().attach(content_tag_id)
+            let content_tag_ids = content_tags.split(',')
+            let current_tag_ids = await game.related('content_tags').pluck('id')
+           
+            let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
+                return content_tag_ids.includes(current_tag_id)===false
+            })
+           
+            await game.content_tags().detach(removing_tag_ids)
+            await game.content_tags().attach(content_tag_ids)
             
             res.redirect(`/list-games/${game_id}/details`)
         },
