@@ -11,6 +11,13 @@
         <li>Recommended Requirement: {{game.recommended_requirement}}</li>
         <li>Minimum Requirement: {{game.minimum_requirement}}</li>
         <li>Banner Image: <img src="{{game.banner_image}}" class="img-fluid"/></li>
+        <li>
+            <ul>
+                {{#each game.images}}
+                <li><img src="{{this.url}}" class="img-fluid"/></li>
+                {{/each}}
+            </ul>        
+        </li>
         <li>Company Name: {{game.company_name}}</li>
         <li>Added Date: {{game.added_date}}</li>
         <li>Category: {{game.category.name}}</li>

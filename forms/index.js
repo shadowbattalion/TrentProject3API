@@ -128,6 +128,46 @@ const create_game_form=(categories, content_tags)=>{
             },
             widget: widgets.multipleSelect(),
             choices: content_tags  
+        }),
+        'url_1': fields.string({
+            "label":'Game Image 1',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_2': fields.string({
+            "label":'Game Image 2',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_3': fields.string({
+            "label":'Game Image 3',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_4': fields.string({
+            "label":'Game Image 4',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_5': fields.string({
+            "label":'Game Image 5',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
         })   
     })
 }

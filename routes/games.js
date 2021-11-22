@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Game, Category, ContentTag} = require('../models')
+const {Game, Category, ContentTag, Image} = require('../models')
 
 const {bootstrap_field , create_game_form} = require('../forms')
 
@@ -40,13 +40,15 @@ router.get('/:game_id/details', async(req,res)=>{
     }).fetch({
         require:true,
         withRelated:['category'],
-        withRelated:['content_tags']
+        withRelated:['content_tags'],
+        withRelated:['images']
     })
 
 
     //modify date format
     game_json = game.toJSON()
     game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
+
 
     res.render('games/game-details',{
         'game':game_json
@@ -92,9 +94,16 @@ router.post('/add',async(req,res)=>{
     const game_form = create_game_form(categories, content_tags)
     game_form.handle(req,{
         "success": async(form)=>{
-            let {content_tags, ...game_data}=form.data
+            let {content_tags, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+
             const game=new Game(game_data)
-            await game.save()
+            let saved_object = await game.save()
+            
+            for (let url of [url_1, url_2, url_3, url_4, url_5]){
+                let image = new Image()
+                await image.save({'game_id':saved_object.attributes.id, 'url':url})
+            }
+           
             if(content_tags){
                 
                 await game.content_tags().attach(content_tags.split(","))
@@ -127,7 +136,8 @@ router.get('/:game_id/update', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['content_tags']
+        withRelated:['content_tags'],
+        withRelated:['images']
     })
 
     
@@ -148,6 +158,15 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.recommended_requirement.value = game.get('recommended_requirement')
     game_form.fields.minimum_requirement.value = game.get('minimum_requirement')
     game_form.fields.banner_image.value = game.get('banner_image')
+
+    let images = await game.related('images').pluck('url')
+
+    game_form.fields.url_1.value = images[0]
+    game_form.fields.url_2.value = images[1]
+    game_form.fields.url_3.value = images[2]
+    game_form.fields.url_4.value = images[3]
+    game_form.fields.url_5.value = images[4]
+
     game_form.fields.company_name.value = game.get('company_name')
     game_form.fields.added_date.value = game.get('added_date')
     game_form.fields.category_id.value = game.get('category_id')
@@ -178,18 +197,41 @@ router.post('/:game_id/update', async(req,res)=>{
     const categories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
 
+    const content_tags = await ContentTag.fetchAll().map((content_tag) => {
+        return [content_tag.get('id'), content_tag.get('name')]
+    })
 
+    const images = await Image.where({'game_id':game_id}).fetchAll().map((image)=>{
+        return image.get('id')
+    })
+
+    
+    
 
 
     const game_form = create_game_form(categories, content_tags)
 
     game_form.handle(req,{
         "success": async (form) => {
-            let {content_tags, ...game_data}=form.data
+            let {content_tags, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
             game.set(game_data)
-            game.save()
+            await game.save()
+            
+            urls = [url_1, url_2, url_3, url_4, url_5]
+
+            images.forEach((key, i) => console.log(key, urls[i]) );
+
+            // for (let url of [url_1, url_2, url_3, url_4, url_5]){
+
+
+                
+            //     if(image){
+            //         let image = new Image()
+            //         await image.save({'game_id':saved_object.attributes.id, 'url':url})
+            //     }
+            // }
+
 
             
             let content_tag_id = content_tags.split(',')
