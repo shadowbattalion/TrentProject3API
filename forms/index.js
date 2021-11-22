@@ -180,4 +180,4 @@ const create_category_form = ""
 
 
 
-module.exports = { bootstrap_field, create_game_form, create_tag_form, create_category_form };
+module.exports = { bootstrap_field, create_game_form, create_tag_form, create_category_form }
