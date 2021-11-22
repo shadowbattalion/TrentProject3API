@@ -173,4 +173,11 @@ const create_game_form=(categories, content_tags)=>{
 }
 
 
-module.exports = { bootstrap_field, create_game_form };
+
+const create_tag_form = ""
+
+const create_category_form = ""
+
+
+
+module.exports = { bootstrap_field, create_game_form, create_tag_form, create_category_form };
