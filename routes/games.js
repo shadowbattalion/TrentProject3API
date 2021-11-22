@@ -100,8 +100,9 @@ router.post('/add',async(req,res)=>{
             let saved_object = await game.save()
             
             for (let url of [url_1, url_2, url_3, url_4, url_5]){
-                let image = new Image()
-                await image.save({'game_id':saved_object.attributes.id, 'url':url})
+                console.log(url)
+                let image = new Image({'game_id':saved_object.attributes.id, 'url':url})
+                await image.save()
             }
            
             if(content_tags){
@@ -220,19 +221,24 @@ router.post('/:game_id/update', async(req,res)=>{
             
             urls = [url_1, url_2, url_3, url_4, url_5]
 
-            images.forEach((key, i) => console.log(key, urls[i]) );
-
-            // for (let url of [url_1, url_2, url_3, url_4, url_5]){
-
-
+            images.forEach(async (key, i) => {
                 
-            //     if(image){
-            //         let image = new Image()
-            //         await image.save({'game_id':saved_object.attributes.id, 'url':url})
-            //     }
-            // }
+                const image = await Image.where({
+                    'id':key
+                }).fetch({
+                    require:true
+                })
+                
+                image.set({"url": urls[i]})
+                await image.save()
 
+            
+            
+            });
 
+            //ask paul
+
+   
             
             let content_tag_id = content_tags.split(',')
             let current_tags = await game.related('content_tags').pluck('id')
