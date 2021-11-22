@@ -13,6 +13,14 @@
         <li>Banner Image: <img src="{{game.banner_image}}" class="img-fluid"/></li>
         <li>Company Name: {{game.company_name}}</li>
         <li>Added Date: {{game.added_date}}</li>
+        <li>Category: {{game.category.name}}</li>
+        <li>Tags:
+            <ul>
+                {{#each game.content_tags}}
+                <li>{{this.name}}</li>
+                {{/each}}
+            </ul>
+        </li>
     </ul>
 
            

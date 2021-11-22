@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Game} = require('../models')
+const {Game, Category, ContentTag} = require('../models')
 
 const {bootstrap_field , create_game_form} = require('../forms')
 
@@ -33,13 +33,14 @@ router.get('/', async(req,res)=>{
 router.get('/:game_id/details', async(req,res)=>{
 
     
-
     const game_id = req.params.game_id
 
     const game = await Game.where({
         'id':game_id
     }).fetch({
-        require:true
+        require:true,
+        withRelated:['category'],
+        withRelated:['content_tags']
     })
 
 
@@ -58,8 +59,18 @@ router.get('/:game_id/details', async(req,res)=>{
 
 
 router.get('/add', async(req,res)=>{
-    console.log("TEST")
-    const game_form = create_game_form()
+
+
+
+    const categories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+
+
+
+
+    const game_form = create_game_form(categories, content_tags)
     res.render('games/add',{
         "form":game_form.toHTML(bootstrap_field)
     })
@@ -68,13 +79,28 @@ router.get('/add', async(req,res)=>{
 
 
 router.post('/add',async(req,res)=>{
-    
-    const game_form = create_game_form()
+
+
+    const categories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+
+
+
+
+    const game_form = create_game_form(categories, content_tags)
     game_form.handle(req,{
         "success": async(form)=>{
-            const game=new Game()
-            game.set(form.data)
+            let {content_tags, ...game_data}=form.data
+            const game=new Game(game_data)
             await game.save()
+            if(content_tags){
+                
+                await game.content_tags().attach(content_tags.split(","))
+                
+            }
+
             res.redirect('/list-games')
         },
         "error": async(form)=>{
@@ -100,10 +126,20 @@ router.get('/:game_id/update', async(req,res)=>{
     const game = await Game.where({
         'id':game_id
     }).fetch({
-        require:true
+        require:true,
+        withRelated:['content_tags']
     })
 
-    const game_form=create_game_form()
+    
+    const categories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+
+
+
+
+    const game_form = create_game_form(categories, content_tags)
 
     game_form.fields.title.value = game.get('title')
     game_form.fields.cost.value = game.get('cost')
@@ -114,6 +150,9 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.banner_image.value = game.get('banner_image')
     game_form.fields.company_name.value = game.get('company_name')
     game_form.fields.added_date.value = game.get('added_date')
+    game_form.fields.category_id.value = game.get('category_id')
+    let content_tags_chosen = await game.related('content_tags').pluck('id')
+    game_form.fields.content_tags.value= content_tags_chosen
 
     res.render('games/update',{
         'form':game_form.toHTML(bootstrap_field),
@@ -136,12 +175,29 @@ router.post('/:game_id/update', async(req,res)=>{
     })
 
     
-    const game_form=create_game_form()
+    const categories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+
+
+
+
+    const game_form = create_game_form(categories, content_tags)
 
     game_form.handle(req,{
         "success": async (form) => {
-            game.set(form.data)
+            let {content_tags, ...game_data}=form.data
+            game.set(game_data)
             game.save()
+
+            
+            let content_tag_id = content_tags.split(',')
+            let current_tags = await game.related('content_tags').pluck('id')
+            let removing_tags = current_tags.filter((tag_id)=>content_tag_id.includes(tag_id)===false)
+            await game.content_tags().detach(removing_tags)
+            await game.content_tags().attach(content_tag_id)
+            
             res.redirect(`/list-games/${game_id}/details`)
         },
         "error": async(form)=>{

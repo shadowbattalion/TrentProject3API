@@ -1,10 +1,29 @@
-const bookhself = require('../bookshelf')
+const bookshelf = require('../bookshelf')
 
 
-const Game = bookhself.model('Games',{
-    tableName:'games'
+const Category = bookshelf.model('Category',{
+    tableName: 'categories',
+    games(){
+        return this.hasMany('Game')
+    }
 })
 
 
+const Game = bookshelf.model('Game',{
+    tableName:'games',
+    category(){
+        return this.belongsTo('Category')
+    },
+    content_tags(){
+        return this.belongsToMany('ContentTag')
+    }
+})
 
-module.exports={Game}
+const ContentTag=bookshelf.model('ContentTag',{
+    tableName:'content_tags',
+    games() {
+        return this.belongsToMany('Game')
+    }
+})
+
+module.exports={Game, Category, ContentTag}
