@@ -282,10 +282,33 @@ const create_user_reg_form = () => {
     })
 }
 
+
+const create_login_form = () => {
+    return forms.create({
+        'display_name_email': fields.string({
+            label:"Display Name or Email",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            }
+        }),
+        'password': fields.password({
+            label:"Password",
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            }
+        }),
+    })
+}
+
+
 const create_tag_form = ""
 
 const create_category_form = ""
 
 
 
-module.exports = { bootstrap, create_game_form, create_user_reg_form, create_tag_form, create_category_form }
+module.exports = { bootstrap, create_game_form, create_user_reg_form, create_login_form, create_tag_form, create_category_form }

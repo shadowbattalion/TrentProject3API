@@ -2,7 +2,14 @@
 
 {{#block 'content'}}
 <h1>Login</h1>
-<p>Please login with your account below!</p>
+<p>Please login! You can use your email or your display name!</p>
+
+<form method="POST">
+    {{{form}}}
+<input type="submit" value="Login" class="btn btn-primary" />
+</form>
+
+
 {{/block}}
 
 {{/extends}}
