@@ -56,4 +56,10 @@ const Review = bookshelf.model('Review',{
     }
 })
 
-module.exports={Game, Category, ContentTag, Platform, Image, Review}
+
+const User = bookshelf.model('User',{
+    tableName: 'users'
+})
+
+
+module.exports={Game, Category, ContentTag, Platform, Image, Review, User}

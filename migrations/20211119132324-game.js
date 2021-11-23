@@ -25,7 +25,8 @@ exports.up = function(db) {
     minimum_requirement:{type: 'string', length:600},
     banner_image:{type: 'string', length:300},
     company_name:{type: 'string', length:100},
-    added_date:{type: 'date'}
+    added_date:{type: 'date'},
+    released_date:{type: 'date'}
   })
 };
 

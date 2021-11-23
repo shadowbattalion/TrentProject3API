@@ -189,6 +189,15 @@ const create_game_form=(categories, content_tags, platforms)=>{
             },
             "widget": widgets.date()
         }),
+        'released_date': fields.string({
+            "label":'Date Released',
+            "required":true,
+            "errorAfterField":true,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            "widget": widgets.date()
+        }),
         'category_id': fields.string({
             label:'Category',
             required: true,
@@ -223,7 +232,54 @@ const create_game_form=(categories, content_tags, platforms)=>{
     })
 }
 
-
+const create_user_reg_form = () => {
+    return forms.create({
+        'email': fields.string({
+            label:'Email Address',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
+        'display_name': fields.string({
+            label:'Display Name',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            'validators':[validators.maxlength(50)]
+        }),
+        'password': fields.password({
+            label:'Password',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            'validators':[validators.maxlength(100)]
+        }),
+        'confirm_password': fields.password({
+            label:'Confirm Password',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            validators: [validators.matchField('password')]
+        }),
+        'device_specs': fields.password({
+            label:'User Device Specifications',
+            required: false,
+            cssClasses: {
+                label: ['form-label']
+            },
+            'validators':[validators.maxlength(600)]
+        })
+    })
+}
 
 const create_tag_form = ""
 
@@ -231,4 +287,4 @@ const create_category_form = ""
 
 
 
-module.exports = { bootstrap_field, create_game_form, create_tag_form, create_category_form }
+module.exports = { bootstrap_field, create_game_form, create_user_reg_form, create_tag_form, create_category_form }

@@ -46,6 +46,9 @@ router.get('/:game_id/details', async(req,res)=>{
 
         //modify date format
         game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
+        game_json.released_date=game_json.released_date.toLocaleDateString('en-GB')
+
+        
 
         //check for empty images
         game_json.images=game_json.images.filter((image)=>{return image.url!=""})
@@ -218,6 +221,7 @@ router.get('/:game_id/update', async(req,res)=>{
 
     game_form.fields.company_name.value = game.get('company_name')
     game_form.fields.added_date.value = game.get('added_date')
+    game_form.fields.released_date.value = game.get('released_date')
     game_form.fields.category_id.value = game.get('category_id')
 
     let content_tags_chosen = await game.related('content_tags').pluck('id')
