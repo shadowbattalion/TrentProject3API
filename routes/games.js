@@ -4,7 +4,7 @@ const router = express.Router()
 
 const {Game, Category, ContentTag, Platform, Image, Review} = require('../models')
 
-const {bootstrap_field , create_game_form} = require('../forms')
+const {bootstrap, create_game_form} = require('../forms')
 
 
 
@@ -91,7 +91,7 @@ router.get('/add', async(req,res)=>{
 
     const game_form = create_game_form(categories, content_tags, platforms)
     res.render('games/add',{
-        "form":game_form.toHTML(bootstrap_field)
+        "form":game_form.toHTML(bootstrap)
     })
 
 })
@@ -152,7 +152,7 @@ router.post('/add',async(req,res)=>{
         },
         "error": async(form)=>{
             res.render('games/add', {
-                "form":form.toHTML(bootstrap_field)
+                "form":form.toHTML(bootstrap)
             })
 
         }
@@ -231,7 +231,7 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.platforms.value = platforms_chosen
 
     res.render('games/update',{
-        'form':game_form.toHTML(bootstrap_field),
+        'form':game_form.toHTML(bootstrap),
         'game':game.toJSON()
     })
 
@@ -351,7 +351,7 @@ router.post('/:game_id/update', async(req,res)=>{
         },
         "error": async(form)=>{
             res.render('games/update', {
-                "form":form.toHTML(bootstrap_field),
+                "form":form.toHTML(bootstrap),
                 "game":game.toJSON()
             })
         }

@@ -48,6 +48,7 @@ app.use(function (req, res, next) {
 //routes
 const home_route = require('./routes/home');
 const games_route = require('./routes/games')
+const users_route = require('./routes/users')
 
 
 
@@ -55,6 +56,7 @@ async function main() {
 
     app.use('/', home_route)
     app.use('/list-games', games_route)
+    app.use('/users', users_route)
 
 
  

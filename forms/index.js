@@ -3,7 +3,7 @@ const fields = forms.fields
 const validators = forms.validators
 const widgets = forms.widgets
 
-var bootstrap_field = function (name, object) {
+var bootstrap = function (name, object) {
     if (!Array.isArray(object.widget.classes)) { object.widget.classes = [] }
 
     if (object.widget.classes.indexOf('form-control') === -1) {
@@ -241,7 +241,7 @@ const create_user_reg_form = () => {
             cssClasses: {
                 label: ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.email()]
         }),
         'display_name': fields.string({
             label:'Display Name',
@@ -270,12 +270,13 @@ const create_user_reg_form = () => {
             },
             validators: [validators.matchField('password')]
         }),
-        'device_specs': fields.password({
+        'device_specs': fields.string({
             label:'User Device Specifications',
             required: false,
             cssClasses: {
                 label: ['form-label']
             },
+            "widget": widgets.textarea(),
             'validators':[validators.maxlength(600)]
         })
     })
@@ -287,4 +288,4 @@ const create_category_form = ""
 
 
 
-module.exports = { bootstrap_field, create_game_form, create_user_reg_form, create_tag_form, create_category_form }
+module.exports = { bootstrap, create_game_form, create_user_reg_form, create_tag_form, create_category_form }
