@@ -18,6 +18,13 @@
                 {{/each}}
             </ul>        
         </li>
+        <li>
+            <ul>
+                {{#each game.reviews}}
+                <li>{{this.review}}</li>
+                {{/each}}
+            </ul>        
+        </li>
         <li>Company Name: {{game.company_name}}</li>
         <li>Added Date: {{game.added_date}}</li>
         <li>Category: {{game.category.name}}</li>

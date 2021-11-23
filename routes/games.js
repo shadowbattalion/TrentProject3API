@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Game, Category, ContentTag, Platform, Image} = require('../models')
+const {Game, Category, ContentTag, Platform, Image, Review} = require('../models')
 
 const {bootstrap_field , create_game_form} = require('../forms')
 
@@ -39,18 +39,20 @@ router.get('/:game_id/details', async(req,res)=>{
             'id':game_id
         }).fetch({
             require:true,
-            withRelated:['category','content_tags', 'platforms', 'images']
+            withRelated:['category','content_tags', 'platforms', 'images', 'reviews']
         })
 
+        game_json = game.toJSON()
 
         //modify date format
-        game_json = game.toJSON()
         game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
 
         //check for empty images
-        game_json = game.toJSON()
         game_json.images=game_json.images.filter((image)=>{return image.url!=""})
-    
+        
+        //check for empty reviews
+        game_json.reviews=game_json.reviews.filter((review)=>{return review.review!=""})
+        
 
         res.render('games/game-details',{
             'game':game_json
@@ -73,8 +75,14 @@ router.get('/add', async(req,res)=>{
     const categories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
-    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
+    
+    const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
+        return [content_tag.get('id'), content_tag.get('name')]
+    })
+    
+    const platforms = await Platform.fetchAll().map((platform) => {
+        return [platform.get('id'), platform.get('name')]
+    })
 
 
 
@@ -92,23 +100,36 @@ router.post('/add',async(req,res)=>{
     const categories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
-    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
+
+    const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
+        return [content_tag.get('id'), content_tag.get('name')]
+    })
+
+    const platforms = await Platform.fetchAll().map((platform) => {
+        return [platform.get('id'), platform.get('name')]
+    })
 
 
 
     const game_form = create_game_form(categories, content_tags, platforms)
     game_form.handle(req,{
         "success": async(form)=>{
-            let {content_tags, platforms, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
 
             const game=new Game(game_data)
             let saved_object = await game.save()
             
             for (let url of [url_1, url_2, url_3, url_4, url_5]){
                
-                let image = new Image({'game_id':saved_object.attributes.id, 'url':url})
-                await image.save()
+                let image_object = new Image({'game_id':saved_object.attributes.id, 'url':url})
+                await image_object.save()
+            }
+
+
+            for (let review of [review_1, review_2, review_3, review_4, review_5]){
+               
+                let new_review = new Review({'game_id':saved_object.attributes.id, 'review':review})
+                await new_review.save()
             }
            
             if(content_tags){
@@ -150,15 +171,22 @@ router.get('/:game_id/update', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['content_tags','platforms','images']
+        withRelated:['content_tags','platforms','images','reviews']
     })
 
     
     const categories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
-    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
+
+    const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
+        return [content_tag.get('id'), content_tag.get('name')]
+    })
+
+    const platforms = await Platform.fetchAll().map((platform) => {
+        return [platform.get('id'), platform.get('name')]
+    })
+      
 
 
 
@@ -171,6 +199,14 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.recommended_requirement.value = game.get('recommended_requirement')
     game_form.fields.minimum_requirement.value = game.get('minimum_requirement')
     game_form.fields.banner_image.value = game.get('banner_image')
+
+    let reviews = await game.related('reviews').pluck('review')
+
+    game_form.fields.review_1.value = reviews[0]
+    game_form.fields.review_2.value = reviews[1]
+    game_form.fields.review_3.value = reviews[2]
+    game_form.fields.review_4.value = reviews[3]
+    game_form.fields.review_5.value = reviews[4]
 
     let images = await game.related('images').pluck('url')
 
@@ -237,11 +273,22 @@ router.post('/:game_id/update', async(req,res)=>{
         return [content_tag.get('id'), content_tag.get('name')]
     })
 
-    const images = await Image.where({'game_id':game_id}).fetchAll().map((image)=>{
+    const platforms = await Platform.fetchAll().map((platform) => {
+        return [platform.get('id'), platform.get('name')]
+    })
+
+
+    //tables to fetch each image id based on game_id
+    const images_object = await Image.where({'game_id':game_id}).fetchAll().map((image)=>{
         return image.get('id')
     })
 
-    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
+    //tables to fetch each review id based on game_id
+    const reviews_object = await Review.where({'game_id':game_id}).fetchAll().map((review)=>{
+        return review.get('id')
+    })
+
+    
 
 
 
@@ -249,13 +296,14 @@ router.post('/:game_id/update', async(req,res)=>{
 
     game_form.handle(req,{
         "success": async (form) => {
-            let {content_tags, platforms, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
             game.set(game_data)
             await game.save()
             
-            urls = [url_1, url_2, url_3, url_4, url_5]
+            //update images based on array of image ids
+            let urls = [url_1, url_2, url_3, url_4, url_5]
 
-            images.forEach(async (key, i) => {
+            images_object.forEach(async (key, i) => {
                 
                 const image = await Image.where({
                     'id':key
@@ -267,8 +315,24 @@ router.post('/:game_id/update', async(req,res)=>{
                 await image.save()
 
             
+            })
+
+            //update reviews based on array of review ids
+            let reviews = [review_1, review_2, review_3, review_4, review_5]
+
+            reviews_object.forEach(async (key, i) => {
+                
+                const review = await Review.where({
+                    'id':key
+                }).fetch({
+                    require:true
+                })
+                
+                review.set({"review": reviews[i]})
+                await review.save()
+
             
-            });
+            })
 
             //ask paul
 
@@ -277,32 +341,6 @@ router.post('/:game_id/update', async(req,res)=>{
             //platform update
             filtering(platforms, game, game.platforms(), 'platforms')
 
-            // //content_tag update
-            // let content_tag_ids = content_tags.split(',')
-            // let current_tag_ids = await game.related('content_tags').pluck('id')
-           
-            // let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
-            //     return content_tag_ids.includes(current_tag_id)===false
-            // })
-           
-            // await game.content_tags().detach(removing_tag_ids)
-            // await game.content_tags().attach(content_tag_ids)
-
-            
-
-            // //platform update
-            // let platform_ids = platforms.split(',')
-            // let current_tag_ids = await game.related('platforms').pluck('id')
-           
-            // let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
-            //     return platform_ids.includes(current_tag_id)===false
-            // })
-           
-            // await game.platforms().detach(removing_tag_ids)
-            // await game.platforms().attach(platform_ids)
-
-
-            
             
             req.flash("success_messages", `${game.get('title')} has been updated`)
             res.redirect(`/list-games/${game_id}/details`)

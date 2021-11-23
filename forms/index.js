@@ -91,6 +91,86 @@ const create_game_form=(categories, content_tags, platforms)=>{
             },
             'validators':[validators.maxlength(300)]
         }),
+        'url_1': fields.string({
+            "label":'Game Image 1',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_2': fields.string({
+            "label":'Game Image 2',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_3': fields.string({
+            "label":'Game Image 3',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_4': fields.string({
+            "label":'Game Image 4',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'url_5': fields.string({
+            "label":'Game Image 5',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(300)]
+        }),
+        'review_1': fields.string({
+            "label":'Review 1',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
+        'review_2': fields.string({
+            "label":'Review 2',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
+        'review_3': fields.string({
+            "label":'Review 3',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
+        'review_4': fields.string({
+            "label":'Review 4',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
+        'review_5': fields.string({
+            "label":'Review 5',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            'validators':[validators.maxlength(200)]
+        }),
         'company_name': fields.string({
             "label":'Company Name',
             "required":true,
@@ -138,47 +218,8 @@ const create_game_form=(categories, content_tags, platforms)=>{
             },
             widget: widgets.multipleSelect(),
             choices: platforms 
-        }),
-        'url_1': fields.string({
-            "label":'Game Image 1',
-            "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
-        }),
-        'url_2': fields.string({
-            "label":'Game Image 2',
-            "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
-        }),
-        'url_3': fields.string({
-            "label":'Game Image 3',
-            "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
-        }),
-        'url_4': fields.string({
-            "label":'Game Image 4',
-            "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
-        }),
-        'url_5': fields.string({
-            "label":'Game Image 5',
-            "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
-        })   
+        })
+           
     })
 }
 
