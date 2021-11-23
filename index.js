@@ -62,7 +62,7 @@ async function main() {
 
 main();
 
-app.listen(3002, () => {
+app.listen(3004, () => {
   console.log("Server has started");
 })
 
