@@ -137,7 +137,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.regexp(/\|+\w+/g,"Incorrect format. Remember to add '|' character in this format: &ltdescription&gt|&ltreview aggregator company&gt")]
         }),
         'review_2': fields.string({
             "label":'Review 2',
@@ -145,7 +145,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.regexp(/\|+\w+/g,"Incorrect format. Remember to add '|' character in this format: &ltdescription&gt|&ltreview aggregator company&gt")]
         }),
         'review_3': fields.string({
             "label":'Review 3',
@@ -153,7 +153,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.regexp(/\|+\w+/g,"Incorrect format. Remember to add '|' character in this format: &ltdescription&gt|&ltreview aggregator company&gt")]
         }),
         'review_4': fields.string({
             "label":'Review 4',
@@ -161,7 +161,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.regexp(/\|+\w+/g,"Incorrect format. Remember to add '|' character in this format: &ltdescription&gt|&ltreview aggregator company&gt")]
         }),
         'review_5': fields.string({
             "label":'Review 5',
@@ -169,7 +169,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.maxlength(200)]
+            'validators':[validators.maxlength(200), validators.regexp(/\|+\w+/g,"Incorrect format. Remember to add '|' character in this format: &ltdescription&gt|&ltreview aggregator company&gt")]
         }),
         'company_name': fields.string({
             "label":'Company Name',
