@@ -1,27 +1,49 @@
-const express = require("express");
-const hbs = require("hbs");
-const wax = require("wax-on");
-require("dotenv").config();
+const express = require("express")
+const hbs = require("hbs")
+const wax = require("wax-on")
+require("dotenv").config()
 
-// create an instance of express app
-let app = express();
+const session = require('express-session')
+const flash = require('connect-flash')
+const FileStore = require('session-file-store')(session)
 
-// set the view engine
-app.set("view engine", "hbs");
 
-// static folder
-app.use(express.static("public"));
+let app = express()
 
-// setup wax-on
+
+app.set("view engine", "hbs")
+
+
+app.use(express.static("public"))
+
+
 wax.on(hbs.handlebars);
-wax.setLayoutPath("./views/layouts");
+wax.setLayoutPath("./views/layouts")
 
-// enable forms
+
 app.use(
   express.urlencoded({
     extended: false
   })
-);
+)
+
+app.use(session({
+  store: new FileStore(),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
+
+app.use(flash())
+
+//middlewares
+// Flash
+app.use(function (req, res, next) {
+  res.locals.success_messages = req.flash("success_messages")
+  res.locals.error_messages = req.flash("error_messages")
+  next()
+})
+
 
 //routes
 const home_route = require('./routes/home');
@@ -42,5 +64,5 @@ main();
 
 app.listen(3001, () => {
   console.log("Server has started");
-});
+})
 

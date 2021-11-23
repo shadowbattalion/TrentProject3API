@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Game, Category, ContentTag, Image} = require('../models')
+const {Game, Category, ContentTag, Platform, Image} = require('../models')
 
 const {bootstrap_field , create_game_form} = require('../forms')
 
@@ -32,26 +32,34 @@ router.get('/', async(req,res)=>{
 
 router.get('/:game_id/details', async(req,res)=>{
 
+    // try{
+        const game_id = req.params.game_id
+
+        const game = await Game.where({
+            'id':game_id
+        }).fetch({
+            require:true,
+            withRelated:['category','content_tags', 'platforms', 'images']
+        })
+
+
+        //modify date format
+        game_json = game.toJSON()
+        game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
+
+        //check for empty images
+        game_json = game.toJSON()
+        game_json.images=game_json.images.filter((image)=>{return image.url!=""})
     
-    const game_id = req.params.game_id
 
-    const game = await Game.where({
-        'id':game_id
-    }).fetch({
-        require:true,
-        withRelated:['category','content_tags', 'images']
-    })
+        res.render('games/game-details',{
+            'game':game_json
+        })
+    // } catch(e){
 
+    //     res.render('error/error-page')
 
-    //modify date format
-    game_json = game.toJSON()
-    game_json.added_date=game_json.added_date.toLocaleDateString('en-GB')
-
-
-    res.render('games/game-details',{
-        'game':game_json
-    })
-
+    // }
 
 })
 
@@ -66,11 +74,11 @@ router.get('/add', async(req,res)=>{
         return [category.get('id'), category.get('name')]
     })
     const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
 
 
 
-
-    const game_form = create_game_form(categories, content_tags)
+    const game_form = create_game_form(categories, content_tags, platforms)
     res.render('games/add',{
         "form":game_form.toHTML(bootstrap_field)
     })
@@ -85,14 +93,14 @@ router.post('/add',async(req,res)=>{
         return [category.get('id'), category.get('name')]
     })
     const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
 
 
 
-
-    const game_form = create_game_form(categories, content_tags)
+    const game_form = create_game_form(categories, content_tags, platforms)
     game_form.handle(req,{
         "success": async(form)=>{
-            let {content_tags, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
 
             const game=new Game(game_data)
             let saved_object = await game.save()
@@ -109,6 +117,13 @@ router.post('/add',async(req,res)=>{
                 
             }
 
+            if(platforms){
+                
+                await game.platforms().attach(platforms.split(","))
+                
+            }
+
+            req.flash("success_messages", `${game.get('title')} has been added`)
             res.redirect('/list-games')
         },
         "error": async(form)=>{
@@ -135,7 +150,7 @@ router.get('/:game_id/update', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['content_tags','images']
+        withRelated:['content_tags','platforms','images']
     })
 
     
@@ -143,11 +158,11 @@ router.get('/:game_id/update', async(req,res)=>{
         return [category.get('id'), category.get('name')]
     })
     const content_tags = await ContentTag.fetchAll().map( content_tag => [content_tag.get('id'), content_tag.get('name')])
+    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
 
 
 
-
-    const game_form = create_game_form(categories, content_tags)
+    const game_form = create_game_form(categories, content_tags, platforms)
 
     game_form.fields.title.value = game.get('title')
     game_form.fields.cost.value = game.get('cost')
@@ -168,9 +183,12 @@ router.get('/:game_id/update', async(req,res)=>{
     game_form.fields.company_name.value = game.get('company_name')
     game_form.fields.added_date.value = game.get('added_date')
     game_form.fields.category_id.value = game.get('category_id')
+
     let content_tags_chosen = await game.related('content_tags').pluck('id')
-   
     game_form.fields.content_tags.value = content_tags_chosen
+
+    let platforms_chosen = await game.related('platforms').pluck('id')
+    game_form.fields.platforms.value = platforms_chosen
 
     res.render('games/update',{
         'form':game_form.toHTML(bootstrap_field),
@@ -179,6 +197,23 @@ router.get('/:game_id/update', async(req,res)=>{
 
 
 })
+
+
+async function filtering(ids, main_table, main_table_column, table){
+
+    ids = ids.split(',')
+    let current_tag_ids = await main_table.related(table).pluck('id')
+           
+    let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
+                return ids.includes(current_tag_id)===false
+            })
+           
+    await main_table_column.detach(removing_tag_ids)
+    await main_table_column.attach(ids)
+
+
+
+}
 
 
 router.post('/:game_id/update', async(req,res)=>{
@@ -190,7 +225,7 @@ router.post('/:game_id/update', async(req,res)=>{
         'id':game_id
     }).fetch({
         require:true,
-        withRelated:['content_tags']
+        withRelated:['content_tags','platforms']
     })
 
     
@@ -206,15 +241,15 @@ router.post('/:game_id/update', async(req,res)=>{
         return image.get('id')
     })
 
-    
-    
+    const platforms = await Platform.fetchAll().map( platform => [platform.get('id'), platform.get('name')])
 
 
-    const game_form = create_game_form(categories, content_tags)
+
+    const game_form = create_game_form(categories, content_tags, platforms)
 
     game_form.handle(req,{
         "success": async (form) => {
-            let {content_tags, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
             game.set(game_data)
             await game.save()
             
@@ -237,17 +272,39 @@ router.post('/:game_id/update', async(req,res)=>{
 
             //ask paul
 
-   
-            let content_tag_ids = content_tags.split(',')
-            let current_tag_ids = await game.related('content_tags').pluck('id')
+            //content_tag_update
+            filtering(content_tags, game, game.content_tags(), 'content_tags')
+            //platform update
+            filtering(platforms, game, game.platforms(), 'platforms')
+
+            // //content_tag update
+            // let content_tag_ids = content_tags.split(',')
+            // let current_tag_ids = await game.related('content_tags').pluck('id')
            
-            let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
-                return content_tag_ids.includes(current_tag_id)===false
-            })
+            // let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
+            //     return content_tag_ids.includes(current_tag_id)===false
+            // })
            
-            await game.content_tags().detach(removing_tag_ids)
-            await game.content_tags().attach(content_tag_ids)
+            // await game.content_tags().detach(removing_tag_ids)
+            // await game.content_tags().attach(content_tag_ids)
+
             
+
+            // //platform update
+            // let platform_ids = platforms.split(',')
+            // let current_tag_ids = await game.related('platforms').pluck('id')
+           
+            // let removing_tag_ids = current_tag_ids.filter((current_tag_id)=>{ 
+            //     return platform_ids.includes(current_tag_id)===false
+            // })
+           
+            // await game.platforms().detach(removing_tag_ids)
+            // await game.platforms().attach(platform_ids)
+
+
+            
+            
+            req.flash("success_messages", `${game.get('title')} has been updated`)
             res.redirect(`/list-games/${game_id}/details`)
         },
         "error": async(form)=>{
@@ -294,7 +351,10 @@ router.post('/:game_id/delete', async(req,res)=>{
         require:true
     })
 
+    
+    req.flash("success_messages", `${game.get('title')} has been deleted`)
     await game.destroy();
+    
     res.redirect('/list-games')
 })
 

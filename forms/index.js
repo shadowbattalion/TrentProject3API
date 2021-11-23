@@ -23,7 +23,7 @@ var bootstrap_field = function (name, object) {
     return '<div class="form-group">' + label + widget + error + '</div>'
 }
 
-const create_game_form=(categories, content_tags)=>{
+const create_game_form=(categories, content_tags, platforms)=>{
     return forms.create({
         "title":fields.string({
             "label":'Title',
@@ -128,6 +128,16 @@ const create_game_form=(categories, content_tags)=>{
             },
             widget: widgets.multipleSelect(),
             choices: content_tags  
+        }),
+        'platforms': fields.string({
+            label:'Platforms',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            widget: widgets.multipleSelect(),
+            choices: platforms 
         }),
         'url_1': fields.string({
             "label":'Game Image 1',

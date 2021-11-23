@@ -17,6 +17,9 @@ const Game = bookshelf.model('Game',{
     content_tags(){
         return this.belongsToMany('ContentTag')
     },
+    platforms(){
+        return this.belongsToMany('Platform')
+    },
     images(){
         return this.hasMany('Image')
     }
@@ -24,6 +27,13 @@ const Game = bookshelf.model('Game',{
 
 const ContentTag=bookshelf.model('ContentTag',{
     tableName:'content_tags',
+    games() {
+        return this.belongsToMany('Game')
+    }
+})
+
+const Platform = bookshelf.model('Platform',{
+    tableName:'platforms',
     games() {
         return this.belongsToMany('Game')
     }
@@ -37,4 +47,4 @@ const Image = bookshelf.model('Image',{
     }
 })
 
-module.exports={Game, Category, ContentTag, Image}
+module.exports={Game, Category, ContentTag, Platform, Image}

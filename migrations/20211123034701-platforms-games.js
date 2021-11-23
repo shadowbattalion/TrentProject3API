@@ -15,14 +15,14 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('content_tags_games',{
+  return db.createTable('games_platforms',{
     id: { type: 'int', primaryKey: true, unsigned:true, autoIncrement: true },
     game_id:{
       type: 'int',
       unsigned: true,
       notNull: true,
       foreignKey: {
-        name: 'content_tags_games_game_fk',
+        name: 'platforms_games_game_fk',
         table: 'games',
         mapping: 'id',
         rules: {
@@ -31,13 +31,13 @@ exports.up = function(db) {
         }        
       }
     },
-    content_tag_id:{
+    platform_id:{
       type: 'int',
       unsigned: true,
       notNull: true,
       foreignKey: {
-        name: 'content_tags_games_content_tag_fk',
-        table: 'content_tags',
+        name: 'platforms_games_platform_fk',
+        table: 'platforms',
         mapping: 'id',
         rules: {
             onDelete: 'CASCADE',
@@ -50,7 +50,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return db.dropTable('content_tags_games');
+  return db.dropTable('games_platforms');
 };
 
 exports._meta = {
