@@ -32,7 +32,7 @@ router.get('/', async(req,res)=>{
 
 router.get('/:game_id/details', async(req,res)=>{
 
-    // try{
+    try{
         const game_id = req.params.game_id
 
         const game = await Game.where({
@@ -55,11 +55,11 @@ router.get('/:game_id/details', async(req,res)=>{
         res.render('games/game-details',{
             'game':game_json
         })
-    // } catch(e){
+    } catch(e){
 
-    //     res.render('error/error-page')
+        res.render('error/error-page')
 
-    // }
+    }
 
 })
 
