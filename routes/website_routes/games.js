@@ -2,9 +2,9 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Game, Category, ContentTag, Platform, Image, Review} = require('../models')
-
-const {bootstrap, create_game_form} = require('../forms')
+const {Game, Category, ContentTag, Platform, Image, Review} = require('../../models')
+const {bootstrap, create_game_form} = require('../../forms')
+const {auth_check} = require('../../middleware')
 
 
 
@@ -71,7 +71,7 @@ router.get('/:game_id/details', async(req,res)=>{
 
 
 
-router.get('/add', async(req,res)=>{
+router.get('/add', [auth_check], async(req,res)=>{
 
 
 
@@ -97,7 +97,7 @@ router.get('/add', async(req,res)=>{
 })
 
 
-router.post('/add',async(req,res)=>{
+router.post('/add', [auth_check], async(req,res)=>{
 
 
     const categories = await Category.fetchAll().map((category) => {
@@ -147,7 +147,7 @@ router.post('/add',async(req,res)=>{
                 
             }
 
-            req.flash("success_messages", `${game.get('title')} has been added`)
+            req.flash("success_flash", `${game.get('title')} has been added`)
             res.redirect('/list-games')
         },
         "error": async(form)=>{
@@ -166,7 +166,7 @@ router.post('/add',async(req,res)=>{
 
 
 
-router.get('/:game_id/update', async(req,res)=>{
+router.get('/:game_id/update', [auth_check], async(req,res)=>{
 
     const game_id = req.params.game_id
 
@@ -256,7 +256,7 @@ async function filtering(ids, main_table, main_table_column, table){
 }
 
 
-router.post('/:game_id/update', async(req,res)=>{
+router.post('/:game_id/update', [auth_check], async(req,res)=>{
 
 
     const game_id = req.params.game_id
@@ -346,7 +346,7 @@ router.post('/:game_id/update', async(req,res)=>{
             filtering(platforms, game, game.platforms(), 'platforms')
 
             
-            req.flash("success_messages", `${game.get('title')} has been updated`)
+            req.flash("success_flash", `${game.get('title')} has been updated`)
             res.redirect(`/list-games/${game_id}/details`)
         },
         "error": async(form)=>{
@@ -364,7 +364,7 @@ router.post('/:game_id/update', async(req,res)=>{
 })
 
 
-router.get('/:game_id/delete', async(req,res)=>{
+router.get('/:game_id/delete', [auth_check], async(req,res)=>{
 
 
     const game_id = req.params.game_id
@@ -382,7 +382,7 @@ router.get('/:game_id/delete', async(req,res)=>{
 
 
 
-router.post('/:game_id/delete', async(req,res)=>{
+router.post('/:game_id/delete', [auth_check], async(req,res)=>{
 
 
     const game_id = req.params.game_id
@@ -394,7 +394,7 @@ router.post('/:game_id/delete', async(req,res)=>{
     })
 
     
-    req.flash("success_messages", `${game.get('title')} has been deleted`)
+    req.flash("success_flash", `${game.get('title')} has been deleted`)
     await game.destroy();
     
     res.redirect('/list-games')

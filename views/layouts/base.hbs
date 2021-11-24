@@ -28,6 +28,14 @@
           {{/each}}       
       {{/if}}
 
+      {{#if user_base}}
+          Welcome, <span><a href="/users/user-profile" class="ml-3 btn btn-primary btn-sm">{{user_base.display_name}}</a></span>
+          <a href="/users/user-logout" class="ml-3 btn btn-primary btn-sm">Logout</a>
+      {{else}}
+          <a href="/users/user-login" class="ml-3 btn btn-primary btn-sm">Login</a>
+      {{/if}}
+
+
       {{#block 'content'}}{{/block}}
     </div>
     <!-- Optional JavaScript -->
