@@ -5,7 +5,7 @@ require("dotenv").config()
 const session = require('express-session')
 const flash = require('connect-flash')
 const FileStore = require('session-file-store')(session)
-
+const csrf = require('csurf')
 
 let app = express()
 
@@ -35,6 +35,13 @@ app.use(session({
 }))
 
 
+//global middlewares
+//User Profile base display
+app.use(function(req,res,next){
+  res.locals.user_base = req.session.user?req.session.user:""
+  next();
+})
+
 
 //custom middlewares
 // Flash
@@ -45,13 +52,24 @@ app.use(function (req, res, next) {
   next()
 })
 
+// CSRF
+app.use(csrf())
 
-//global middlewares
-//User Profile base display
+app.use(function (err, req, res, next) {
+  if (err && err.code == "EBADCSRFTOKEN") {
+      req.flash('error_flash', 'The form has expired.');
+      res.redirect('back');
+  } else {
+      next()
+  }
+})
+
 app.use(function(req,res,next){
-  res.locals.user_base = req.session.user?req.session.user:""
+  res.locals.csrf = req.csrfToken();
   next();
 })
+
+
 
 
 //routes

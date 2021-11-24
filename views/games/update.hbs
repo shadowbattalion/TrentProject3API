@@ -3,6 +3,7 @@
 {{#block 'content'}}
 <h1>Update Product: {{game.title}}</h1>
 <form method="POST">
+    <input type="hidden" name="_csrf" value="{{csrf}}"/>
     {{{form}}}
     <input type="submit" value="Update This Game" class="btn btn-primary"/>
 </form>
