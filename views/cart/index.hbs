@@ -5,7 +5,7 @@
 {{#each cart_games}} 
     <div class="card my-3">
         <div class="card-body">
-            <h3 class="card-title">{{this.game.title}} x {{this.quantity}}</h3> 
+            <h3 class="card-title">{{this.game.title}} x {{this.quantity}} = ${{this.sub_total}}</h3> 
             <div>
                 <div>
                     <form method="POST" action="/cart/{{this.game.id}}/quantity/add">
@@ -35,6 +35,13 @@
     </div>
 
 {{/each}}
+
+
+<div class="card my-3">
+        <div class="card-body">
+            <h3 class="card-title">Total: ${{total}}</h3> 
+    </div>
+</div>
 
 {{/block}}
 

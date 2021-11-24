@@ -3,14 +3,17 @@ const router = express.Router()
 
 
 const {auth_check} = require('../../middleware')
-const {get_cart_for_user, add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
+const {get_cart_for_user, calculate_total, add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
 
 
 router.get('/', [auth_check], async (req, res) => {
 
     let cart_games = await get_cart_for_user(req.session.user.id)
+    let total = await calculate_total(req.session.user.id)
+    
     res.render('cart/index',{
-            'cart_games': cart_games.toJSON()
+            'cart_games': cart_games.toJSON(),
+            total
     })
 
 })
@@ -20,7 +23,6 @@ router.get('/', [auth_check], async (req, res) => {
 router.get('/:game_id/add', [auth_check], async function(req, res){
        
     let outcome = await add_game(req.session.user.id, req.params.game_id)
-    console.log(outcome)
     if(outcome){
             req.flash("success_flash", "Item successfully added")
             
