@@ -62,4 +62,12 @@ const User = bookshelf.model('User',{
 })
 
 
-module.exports={Game, Category, ContentTag, Platform, Image, Review, User}
+const CartGame = bookshelf.model('CartGame', {
+    tableName: 'cart_games',
+    game() {
+        return this.belongsTo('Game')
+    }
+
+})
+
+module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame}
