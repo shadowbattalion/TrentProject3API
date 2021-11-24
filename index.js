@@ -7,6 +7,7 @@ const flash = require('connect-flash')
 const FileStore = require('session-file-store')(session)
 const csrf = require('csurf')
 
+
 let app = express()
 
 //HBS
@@ -76,6 +77,7 @@ app.use(function(req,res,next){
 const home_route = require('./routes/website_routes/home');
 const games_route = require('./routes/website_routes/games')
 const users_route = require('./routes/website_routes/users')
+const cloudinary_routes = require('./routes/website_routes/cloudinary.js')
 
 
 
@@ -84,7 +86,7 @@ async function main() {
     app.use('/', home_route)
     app.use('/list-games', games_route)
     app.use('/users', users_route)
-
+    app.use('/cldnry', cloudinary_routes);
  
 }
 

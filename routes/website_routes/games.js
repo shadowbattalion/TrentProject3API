@@ -91,7 +91,11 @@ router.get('/add', [auth_check], async(req,res)=>{
 
     const game_form = create_game_form(categories, content_tags, platforms)
     res.render('games/add',{
-        "form":game_form.toHTML(bootstrap)
+        "form":game_form.toHTML(bootstrap),
+        "name": process.env.CLDNRY_NAME,
+        "api_key": process.env.CLDNRY_API_KEY,
+        "preset": process.env.CLDNRY_UPLOAD_PRESET
+
     })
 
 })
@@ -152,7 +156,10 @@ router.post('/add', [auth_check], async(req,res)=>{
         },
         "error": async(form)=>{
             res.render('games/add', {
-                "form":form.toHTML(bootstrap)
+                "form":form.toHTML(bootstrap),
+                "name": process.env.CLDNRY_NAME,
+                "api_key": process.env.CLDNRY_API_KEY,
+                "preset": process.env.CLDNRY_UPLOAD_PRESET
             })
 
         }

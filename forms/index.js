@@ -85,51 +85,33 @@ const create_game_form=(categories, content_tags, platforms)=>{
         'banner_image': fields.string({
             "label":'Banner Image',
             "required":true,
-            "errorAfterField":true,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            "errorAfterField":true
+            // widget: widgets.hidden()
         }),
         'url_1': fields.string({
             "label":'Game Image 1',
             "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            widget: widgets.hidden()
         }),
         'url_2': fields.string({
             "label":'Game Image 2',
             "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            widget: widgets.hidden()
         }),
         'url_3': fields.string({
             "label":'Game Image 3',
             "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            widget: widgets.hidden()
         }),
         'url_4': fields.string({
             "label":'Game Image 4',
             "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            widget: widgets.hidden()
         }),
         'url_5': fields.string({
             "label":'Game Image 5',
             "required":false,
-            "cssClasses": {
-                "label": ['form-label']
-            },
-            'validators':[validators.maxlength(300)]
+            widget: widgets.hidden()
         }),
         'review_1': fields.string({
             "label":'Review 1',

@@ -5,8 +5,77 @@
 <form method="POST">
     <input type="hidden" name="_csrf" value="{{csrf}}"/>
     {{{form}}}
+    <div>
+        Banner Image:
+        <img src="" id="uploaded_image_banner" style="display:none"/>
+        <a href="#" id="upload_widget_banner_image" class="btn btn-primary">Upload Banner</a>
+        Image 1:
+        <img src="" id="uploaded_image_1" style="display:none"/>
+        <a href="#" id="upload_widget_image_1" class="btn btn-primary">Upload Image 1</a>
+        Image 2:
+        <img src="" id="uploaded_image_2" style="display:none"/>
+        Image 3:
+        <img src="" id="uploaded_image_3" style="display:none"/>
+        Image 4:
+        <img src="" id="uploaded_image_4" style="display:none"/>
+        Image 5:
+        <img src="" id="uploaded_image_5" style="display:none"/>
+
+
+        
+      
+      
+    </div>
     <input type="submit" value="Add This Game" class="btn btn-primary"/>
 </form>
 {{/block}}
 
+
+
 {{/extends}}
+
+
+
+{{#block js}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
+
+<script>
+function signature(callback, signature_params){
+    console.log(signature_params)
+    axios.get('/cldnry/cldnry-sign',{params:{signature_params}}).then(function(response){callback(response.data)})
+}
+
+var myWidget = (banner_url, banner_uploaded) => { 
+    
+
+
+
+    return cloudinary.createUploadWidget({
+        cloudName: '{{name}}',
+        apiKey: '{{api_key}}',
+        uploadPreset: '{{preset}}',
+        uploadSignature: signature
+    }, (error, result) => {
+        console.log(result)
+        if (!error && result && result.event === "success") {
+        //console.log('Done! Here is the image info: ', result.info);
+        // hide the upload widget 
+        //document.querySelector('#upload_widget').style.display="none";
+        
+        // banner image
+        document.querySelector(banner_url).value = result.info.url;
+        document.querySelector(banner_uploaded).src = result.info.thumbnail_url;
+        document.querySelector(banner_uploaded).style.display = 'inline';
+        }
+    })
+
+}
+
+document.getElementById("upload_widget_banner_image").addEventListener("click", () => {myWidget('#id_banner_image','#uploaded_image_banner').open()}, false);
+document.getElementById("upload_widget_image_1").addEventListener("click", () => {myWidget('#id_url_1','#uploaded_image_1').open()}, false);
+
+</script>
+
+
+{{/block}}
