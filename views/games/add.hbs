@@ -23,12 +23,7 @@
         <a href="#" id="upload_widget_image_4" class="btn btn-primary">Upload Image 4</a>
         Image 5:
         <img src="" id="uploaded_image_5" style="display:none"/>
-        <a href="#" id="upload_widget_image_5" class="btn btn-primary">Upload Image 5</a>
-
-
-        
-      
-      
+        <a href="#" id="upload_widget_image_5" class="btn btn-primary">Upload Image 5</a> 
     </div>
     <input type="submit" value="Add This Game" class="btn btn-primary"/>
 </form>
@@ -61,13 +56,7 @@ var myWidget = (banner_url, banner_uploaded) => {
         uploadPreset: '{{preset}}',
         uploadSignature: signature
     }, (error, result) => {
-        console.log(result)
         if (!error && result && result.event === "success") {
-        //console.log('Done! Here is the image info: ', result.info);
-        // hide the upload widget 
-        //document.querySelector('#upload_widget').style.display="none";
-        
-        // banner image
         document.querySelector(banner_url).value = result.info.url;
         document.querySelector(banner_uploaded).src = result.info.thumbnail_url;
         document.querySelector(banner_uploaded).style.display = 'inline';

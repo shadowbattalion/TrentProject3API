@@ -208,7 +208,7 @@ router.get('/:game_id/update', [auth_check], async(req,res)=>{
     game_form.fields.description.value = game.get('description')
     game_form.fields.recommended_requirement.value = game.get('recommended_requirement')
     game_form.fields.minimum_requirement.value = game.get('minimum_requirement')
-    game_form.fields.banner_image.value = game.get('banner_image')
+    
 
     let reviews = await game.related('reviews').pluck('review')
 
@@ -218,8 +218,8 @@ router.get('/:game_id/update', [auth_check], async(req,res)=>{
     game_form.fields.review_4.value = reviews[3]
     game_form.fields.review_5.value = reviews[4]
 
+    game_form.fields.banner_image.value = game.get('banner_image')
     let images = await game.related('images').pluck('url')
-
     game_form.fields.url_1.value = images[0]
     game_form.fields.url_2.value = images[1]
     game_form.fields.url_3.value = images[2]
@@ -238,8 +238,11 @@ router.get('/:game_id/update', [auth_check], async(req,res)=>{
     game_form.fields.platforms.value = platforms_chosen
 
     res.render('games/update',{
-        'form':game_form.toHTML(bootstrap),
-        'game':game.toJSON()
+        "form":game_form.toHTML(bootstrap),
+        "game":game.toJSON(),
+        "name": process.env.CLDNRY_NAME,
+        "api_key": process.env.CLDNRY_API_KEY,
+        "preset": process.env.CLDNRY_UPLOAD_PRESET
     })
 
 

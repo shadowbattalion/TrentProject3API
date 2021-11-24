@@ -1,12 +1,88 @@
 {{#extends 'base'}}
 
 {{#block 'content'}}
-<h1>Update Product: {{game.title}}</h1>
+<h1>Update a Game: {{game.title}}</h1>
 <form method="POST">
     <input type="hidden" name="_csrf" value="{{csrf}}"/>
     {{{form}}}
+    <div>
+        Banner Image:
+        {{#if game.banner_image}}
+            <img src="{{game.banner_image}}" id="uploaded_image_banner" style="display:none"/>
+            <a href="#" id="upload_widget_banner_image" class="btn btn-primary">Upload Banner</a>
+        {{/if}}
+        Image 1:
+        {{#if game.url_1}}
+            <img src="" id="uploaded_image_1" style="display:none"/>
+            <a href="#" id="upload_widget_image_1" class="btn btn-primary">Upload Image 1</a>
+        {{/if}}
+        Image 2:
+        {{#if game.url_2}}
+            <img src="" id="uploaded_image_2" style="display:none"/>
+            <a href="#" id="upload_widget_image_2" class="btn btn-primary">Upload Image 2</a>
+        {{/if}}
+        Image 3:
+        {{#if game.url_3}}
+            <img src="" id="uploaded_image_3" style="display:none"/>
+            <a href="#" id="upload_widget_image_3" class="btn btn-primary">Upload Image 3</a>
+        {{/if}}
+        Image 4:
+        {{#if game.url_4}}
+            <img src="" id="uploaded_image_4" style="display:none"/>
+            <a href="#" id="upload_widget_image_4" class="btn btn-primary">Upload Image 4</a>
+        {{/if}}
+        Image 5:
+        {{#if game.url_5}}
+            <img src="" id="uploaded_image_5" style="display:none"/>
+            <a href="#" id="upload_widget_image_5" class="btn btn-primary">Upload Image 5</a> 
+        {{/if}}
+    </div>
     <input type="submit" value="Update This Game" class="btn btn-primary"/>
 </form>
 {{/block}}
 
 {{/extends}}
+
+
+
+{{#block js}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
+
+<script>
+function signature(callback, signature_params){
+    console.log(signature_params)
+    axios.get('/cldnry/cldnry-sign',{params:{signature_params}}).then(function(response){callback(response.data)})
+}
+
+var myWidget = (banner_url, banner_uploaded) => { 
+    
+
+
+
+    return cloudinary.createUploadWidget({
+        cloudName: '{{name}}',
+        apiKey: '{{api_key}}',
+        uploadPreset: '{{preset}}',
+        uploadSignature: signature
+    }, (error, result) => {
+        if (!error && result && result.event === "success") {
+        document.querySelector(banner_url).value = result.info.url;
+        document.querySelector(banner_uploaded).src = result.info.thumbnail_url;
+        document.querySelector(banner_uploaded).style.display = 'inline';
+        }
+    })
+
+}
+
+document.getElementById("upload_widget_banner_image").addEventListener("click", () => {myWidget('#id_banner_image','#uploaded_image_banner').open()}, false);
+document.getElementById("upload_widget_image_1").addEventListener("click", () => {myWidget('#id_url_1','#uploaded_image_1').open()}, false);
+document.getElementById("upload_widget_image_2").addEventListener("click", () => {myWidget('#id_url_2','#uploaded_image_2').open()}, false);
+document.getElementById("upload_widget_image_3").addEventListener("click", () => {myWidget('#id_url_3','#uploaded_image_3').open()}, false);
+document.getElementById("upload_widget_image_4").addEventListener("click", () => {myWidget('#id_url_4','#uploaded_image_4').open()}, false);
+document.getElementById("upload_widget_image_5").addEventListener("click", () => {myWidget('#id_url_5','#uploaded_image_5').open()}, false);
+
+</script>
+
+
+{{/block}}
