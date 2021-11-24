@@ -78,6 +78,7 @@ const home_route = require('./routes/website_routes/home');
 const games_route = require('./routes/website_routes/games')
 const users_route = require('./routes/website_routes/users')
 const cloudinary_routes = require('./routes/website_routes/cloudinary.js')
+const cart_routes = require('./routes/website_routes/cart.js')
 
 
 
@@ -86,7 +87,8 @@ async function main() {
     app.use('/', home_route)
     app.use('/list-games', games_route)
     app.use('/users', users_route)
-    app.use('/cldnry', cloudinary_routes);
+    app.use('/cldnry', cloudinary_routes)
+    app.use('/cart', cart_routes);
  
 }
 
