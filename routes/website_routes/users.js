@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 const { User } = require('../../models')
 const {bootstrap, create_user_reg_form, create_login_form} = require('../../forms')
-const {auth_check} = require('../../middleware')
+const {auth_check, credentials_check} = require('../../middleware')
 const password_hash = (password) => {return crypto.createHash('sha256').update(password).digest('base64')}
 
 

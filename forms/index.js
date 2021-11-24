@@ -3,6 +3,12 @@ const fields = forms.fields
 const validators = forms.validators
 const widgets = forms.widgets
 
+
+const {validate_exist_email, validate_exist_display_name} = require('../custom_validator')
+
+
+
+
 var bootstrap = function (name, object) {
     if (!Array.isArray(object.widget.classes)) { object.widget.classes = [] }
 
@@ -223,7 +229,7 @@ const create_user_reg_form = () => {
             cssClasses: {
                 label: ['form-label']
             },
-            'validators':[validators.maxlength(200), validators.email()]
+            'validators':[validators.maxlength(200), validators.email(), validate_exist_email()]
         }),
         'display_name': fields.string({
             label:'Display Name',
@@ -232,7 +238,7 @@ const create_user_reg_form = () => {
             cssClasses: {
                 label: ['form-label']
             },
-            'validators':[validators.maxlength(50)]
+            'validators':[validators.maxlength(50), validate_exist_display_name()]
         }),
         'password': fields.password({
             label:'Password',

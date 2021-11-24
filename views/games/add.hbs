@@ -14,12 +14,16 @@
         <a href="#" id="upload_widget_image_1" class="btn btn-primary">Upload Image 1</a>
         Image 2:
         <img src="" id="uploaded_image_2" style="display:none"/>
+        <a href="#" id="upload_widget_image_2" class="btn btn-primary">Upload Image 2</a>
         Image 3:
         <img src="" id="uploaded_image_3" style="display:none"/>
+        <a href="#" id="upload_widget_image_3" class="btn btn-primary">Upload Image 3</a>
         Image 4:
         <img src="" id="uploaded_image_4" style="display:none"/>
+        <a href="#" id="upload_widget_image_4" class="btn btn-primary">Upload Image 4</a>
         Image 5:
         <img src="" id="uploaded_image_5" style="display:none"/>
+        <a href="#" id="upload_widget_image_5" class="btn btn-primary">Upload Image 5</a>
 
 
         
@@ -74,6 +78,10 @@ var myWidget = (banner_url, banner_uploaded) => {
 
 document.getElementById("upload_widget_banner_image").addEventListener("click", () => {myWidget('#id_banner_image','#uploaded_image_banner').open()}, false);
 document.getElementById("upload_widget_image_1").addEventListener("click", () => {myWidget('#id_url_1','#uploaded_image_1').open()}, false);
+document.getElementById("upload_widget_image_2").addEventListener("click", () => {myWidget('#id_url_2','#uploaded_image_2').open()}, false);
+document.getElementById("upload_widget_image_3").addEventListener("click", () => {myWidget('#id_url_3','#uploaded_image_3').open()}, false);
+document.getElementById("upload_widget_image_4").addEventListener("click", () => {myWidget('#id_url_4','#uploaded_image_4').open()}, false);
+document.getElementById("upload_widget_image_5").addEventListener("click", () => {myWidget('#id_url_5','#uploaded_image_5').open()}, false);
 
 </script>
 

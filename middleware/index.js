@@ -1,3 +1,7 @@
+
+
+
+
 const auth_check = (req, res, next) => {
     if (req.session.user) {
         next()
@@ -6,5 +10,9 @@ const auth_check = (req, res, next) => {
         res.redirect('/users/user-login')
     }
 }
+
+
+
+
 
 module.exports = {auth_check}
