@@ -293,10 +293,50 @@ const create_login_form = () => {
 }
 
 
+
+const create_search_form = (categories, content_tags, platforms) => {
+    return forms.create({
+        "title":fields.string({
+            "label":'Title',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            }
+        }),
+        'category_id': fields.string({
+            label: 'Category',
+            required: false,
+            cssClasses: {
+                label: ['form-label']
+            },
+            widget: widgets.select(),
+            choices: categories
+        }),
+        // 'content_tags': fields.string({
+        //     label:'Tags',
+        //     required:false,
+        //     cssClasses: {
+        //         label: ['form-label']
+        //     },
+        //     widget: widgets.multipleSelect(),
+        //     choices: content_tags
+        // }),
+        'platforms': fields.string({
+            label:'Platforms',
+            required:false,
+            cssClasses: {
+                label: ['form-label']
+            },
+            widget: widgets.multipleSelect(),
+            choices: platforms
+        })
+    })
+}
+
 const create_tag_form = ""
 
 const create_category_form = ""
 
 
 
-module.exports = { bootstrap, create_game_form, create_user_reg_form, create_login_form, create_tag_form, create_category_form }
+module.exports = { bootstrap, create_game_form, create_user_reg_form, create_login_form, create_search_form, create_tag_form, create_category_form }

@@ -3,7 +3,7 @@ const router = express.Router()
 
 
 const {Game, Category, ContentTag, Platform, Image, Review} = require('../../models')
-const {bootstrap, create_game_form} = require('../../forms')
+const {bootstrap, create_game_form, create_search_form} = require('../../forms')
 const {auth_check} = require('../../middleware')
 
 
@@ -12,25 +12,124 @@ const {auth_check} = require('../../middleware')
 
 
 
-router.get('/', async(req,res)=>{
+router.get('/', [auth_check], async(req,res)=>{
 
     let games = await Game.collection().fetch()
-    //modify date format
-    let games_json_list=[]
-    for(let game of games.toJSON()){
-        game.added_date=game.added_date.toLocaleDateString('en-GB')
-        games_json_list.push(game)
-    }
-   
-    res.render('games/index',{
-        'games':games_json_list
+
+
+    const categories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
     })
+    
+    categories.unshift([0, 'All'])
+
+
+    const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
+        return [content_tag.get('id'), content_tag.get('name')]
+    })
+
+
+    const platforms = await Platform.fetchAll().map((platform) =>{
+        return [platform.get('id'), platform.get('name')]
+    })
+    
+    
+    let form = create_search_form(categories, content_tags, platforms)
+
+    let retreive_search = Game.collection();
+
+    form.handle(req, {
+        'empty': async (form) => {
+            let games = await retreive_search.fetch()
+
+
+            let games_json_list=[]
+                if(games.toJSON()){
+                for(let game of games.toJSON()){
+                    game.added_date=game.added_date.toLocaleDateString('en-GB')
+                    games_json_list.push(game)
+                }
+            }
+            
+            res.render('games/index', {
+                'games':games_json_list,
+                'form': form.toHTML(bootstrap)
+            })
+
+        },
+        'error': async (form) => {
+
+            let games = await retreive_search.fetch()
+
+
+            let games_json_list=[]
+            for(let game of games.toJSON()){
+                game.added_date=game.added_date.toLocaleDateString('en-GB')
+                games_json_list.push(game)
+            }
+
+            
+            res.render('games/index', {
+                'games':games_json_list,
+                'form': form.toHTML(bootstrap)
+            })
+
+        },
+        'success': async (form) => {
+            // console.log(form.data.category_id)
+            // console.log(form.data.content_tags)
+            // console.log(form.data.platforms)
+            // console.log(form.data.title)
+            
+            if (form.data.category_id != "0" && form.data.category_id) {
+                retreive_search = retreive_search.where('category_id', '=', parseInt(form.data.category_id))
+            }
+
+            // if (form.data.content_tags) {
+            //     let tags = form.data.content_tags.split(',');
+            //     retreive_search = retreive_search.query('join', 'content_tags_games', 'games as g1', 'g1.id', 'games_id').where('content_tag_id', 'in',tags);
+            // }
+
+            if (form.data.platforms) {
+                let platforms = form.data.platforms.split(',');
+                retreive_search = retreive_search.query('join', 'games_platforms', 'games.id', 'game_id').where('platform_id', 'in', platforms);
+            }
+
+
+            if (form.data.title) {
+                retreive_search = retreive_search.where('title', 'like', `%${form.data.title}%`);
+            }
+
+
+            
+            let games = await retreive_search.fetch()
+
+           
+
+            let games_json_list=[]
+            for(let game of games.toJSON()){
+                game.added_date=game.added_date.toLocaleDateString('en-GB')
+                games_json_list.push(game)
+            }
+
+            
+            res.render('games/index', {
+                'games':games_json_list,
+                'form': form.toHTML(bootstrap)
+            })
+
+        }
+    })
+
+
+
+
 
 
 })
 
 
-router.get('/:game_id/details', async(req,res)=>{
+router.get('/:game_id/details', [auth_check], async(req,res)=>{
 
     try{
         const game_id = req.params.game_id
