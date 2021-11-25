@@ -10,10 +10,10 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        {{!-- step 5 --}}
-        let stripe = Stripe('{{publishableKey}}')
+        
+        let stripe = Stripe('{{publishable_key}}')
         stripe.redirectToCheckout({
-            'sessionId':'{{sessionId}}'
+            'sessionId':'{{session_id}}'
         })
     </script>
 

@@ -25,6 +25,7 @@
                 <ul>
                     <li>Category: {{this.game.category.name}}</li>
                     <li>Cost: {{this.game.cost}}</li>
+                    <li>Discount: {{this.game.discount}}</li>
                 </ul>
                 <form method="POST" action="/cart/{{this.game.id}}/delete">
                     <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
@@ -38,8 +39,11 @@
 
 
 <div class="card my-3">
-        <div class="card-body">
-            <h3 class="card-title">Total: ${{total}}</h3> 
+    <div class="card-body">
+        <h3 class="card-title">Total: ${{total}}</h3>
+    </div>
+    <div>
+        <a href="/checkout" class="btn btn-primary btn-lg">Checkout</a>
     </div>
 </div>
 

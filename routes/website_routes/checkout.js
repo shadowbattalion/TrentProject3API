@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
 
     let meta_JSON = JSON.stringify(meta)
 
-
+    console.log(process.env.STRIPE_ERROR_URL)
     let payment = {
         'payment_method_types':['card'],
         'line_items':line_items_list,
@@ -61,8 +61,8 @@ router.get('/', async (req, res) => {
 
     }
 
-
-    let stripe_sess = await Stripe.checkout.sessions.create(payment)
+    // console.log(process.env.STRIPE_ERROR_URL)
+    let stripe_sess = await stripe.checkout.sessions.create(payment)
     console.log(stripe_sess)
     console.log("========================================================================================")
     res.render('checkout/checkout',{
@@ -75,6 +75,17 @@ router.get('/', async (req, res) => {
 })
 
 
+
+
+router.get('/success', (req,res)=>{
+    req.flash("success_flash", "Your order has been proccessed.")  
+    res.redirect('/list-games')
+})
+
+router.get('/error', (req,res)=>{
+    req.flash("error_flash", "Your order failed. Try to checkout again!")
+    res.redirect('/cart')  
+})
 
 
 module.exports = router;
