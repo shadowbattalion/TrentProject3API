@@ -1,3 +1,4 @@
+const e = require('connect-flash');
 const express = require('express');
 const router = express.Router();
 
@@ -23,11 +24,11 @@ router.get('/', async (req, res) => {
         let discount = cart_game.related('game').get('discount')
         let cost_after_discount = Math.floor(((cost)*(1-discount/100)))
 
-        console.log("========================")
-        console.log(cart_game.related('game').get('title'))
-        console.log(cost)
-        console.log(discount)
-        console.log(cost_after_discount)
+        // console.log("========================")
+        // console.log(cart_game.related('game').get('title'))
+        // console.log(cost)
+        // console.log(discount)
+        // console.log(cost_after_discount)
 
         const line_item={
             'name':cart_game.related('game').get('title'),
@@ -49,7 +50,7 @@ router.get('/', async (req, res) => {
 
     let meta_JSON = JSON.stringify(meta)
 
-    console.log(process.env.STRIPE_ERROR_URL)
+    
     let payment = {
         'payment_method_types':['card'],
         'line_items':line_items_list,
@@ -63,8 +64,8 @@ router.get('/', async (req, res) => {
 
     // console.log(process.env.STRIPE_ERROR_URL)
     let stripe_sess = await stripe.checkout.sessions.create(payment)
-    console.log(stripe_sess)
-    console.log("========================================================================================")
+    // console.log(stripe_sess)
+    // console.log("========================================================================================")
     res.render('checkout/checkout',{
         'session_id':stripe_sess.id,
         'publishable_key':process.env.STRIPE_PUBLISHABLE_KEY
@@ -74,6 +75,43 @@ router.get('/', async (req, res) => {
 
 })
 
+router.get('/process_payment',express.raw({type:"application/json"}), (req,res)=>{
+
+
+    let payload  = req.body
+    let end_point_secret = process.env.STRIPE_ENDPOINT_KEY
+
+    let signature_head = req.headers['stripe-signature']
+
+
+    let evt = null
+
+    try{
+        evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
+        console.log(evt.type)
+        if(evt.type == "checkout.session.completed"){
+            let stripe_sess = evt.data.object
+            console.log(stripe_sess)
+            res.send({
+                'received': true
+            })
+
+
+        }
+
+
+
+    } catch(e) {
+
+        res.send({
+            'error':e.message
+        })
+
+
+    }
+
+
+    })
 
 
 

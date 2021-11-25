@@ -2,6 +2,7 @@ const express = require("express")
 const hbs = require("hbs")
 const wax = require("wax-on")
 require("dotenv").config()
+
 const session = require('express-session')
 const flash = require('connect-flash')
 const FileStore = require('session-file-store')(session)
@@ -54,7 +55,7 @@ app.use(function (req, res, next) {
 })
 
 // CSRF
-app.use(csrf())
+const csrfInstance = csrf()
 
 app.use(function (err, req, res, next) {
   if (err && err.code == "EBADCSRFTOKEN") {
@@ -66,7 +67,22 @@ app.use(function (err, req, res, next) {
 })
 
 app.use(function(req,res,next){
-  res.locals.csrf = req.csrfToken();
+
+  if(req.url == "/checkout/process_payment" || req.url.slice(0,5) == '/api/'){
+    next()
+  }else{
+    csrfInstance(req,res,next)
+  }
+
+})
+
+
+app.use(function(req,res,next){
+  if(req.csrfToken){
+    res.locals.csrf = req.csrfToken();
+    
+  }
+
   next();
 })
 
