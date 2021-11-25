@@ -36,8 +36,8 @@ router.get('/', [auth_check], async(req,res)=>{
     
     let form = create_search_form(categories, content_tags, platforms)
 
-    let retreive_search = Game.collection();
-
+    let retreive_search = Game.collection()
+    
     form.handle(req, {
         'empty': async (form) => {
             let games = await retreive_search.fetch()
@@ -76,23 +76,20 @@ router.get('/', [auth_check], async(req,res)=>{
 
         },
         'success': async (form) => {
-            // console.log(form.data.category_id)
-            // console.log(form.data.content_tags)
-            // console.log(form.data.platforms)
-            // console.log(form.data.title)
+            
             
             if (form.data.category_id != "0" && form.data.category_id) {
                 retreive_search = retreive_search.where('category_id', '=', parseInt(form.data.category_id))
             }
 
-            // if (form.data.content_tags) {
-            //     let tags = form.data.content_tags.split(',');
-            //     retreive_search = retreive_search.query('join', 'content_tags_games', 'games as g1', 'g1.id', 'games_id').where('content_tag_id', 'in',tags);
-            // }
+            if (form.data.content_tags) {
+                let tags = form.data.content_tags.split(',');
+                retreive_search = retreive_search.query('join', 'content_tags_games as c', 'games.id', 'c.game_id').where('content_tag_id', 'in',tags);
+            }
 
             if (form.data.platforms) {
                 let platforms = form.data.platforms.split(',');
-                retreive_search = retreive_search.query('join', 'games_platforms', 'games.id', 'game_id').where('platform_id', 'in', platforms);
+                retreive_search = retreive_search.query('join', 'games_platforms as gp', 'games.id', 'gp.game_id').where('platform_id', 'in', platforms);
             }
 
 
@@ -101,6 +98,11 @@ router.get('/', [auth_check], async(req,res)=>{
             }
 
 
+            if (form.data.company_name) {
+                retreive_search = retreive_search.where('company_name', 'like', `%${form.data.company_name}%`);
+            }
+
+            console.log(retreive_search.toJSON())
             
             let games = await retreive_search.fetch()
 

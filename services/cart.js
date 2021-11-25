@@ -26,7 +26,7 @@ async function calculate_total(user_id){
 
 
 async function add_game (user_id, game_id){
-    // try{
+    try{
         let cart_game = await get_user_game(user_id, game_id)
         
         
@@ -48,14 +48,14 @@ async function add_game (user_id, game_id){
             let cost = game.toJSON().cost
             let discount = game.toJSON().discount
             let cost_after_discount = ((cost/100)*(1-discount/100)).toFixed(2)
-        
+            
             await add_game_to_cart(user_id, game_id, cost_after_discount, 1)
             return true
 
         }
-    // } catch(e){
-    //     return false
-    // }
+    } catch(e){
+        return false
+    }
 }
 
 
@@ -90,7 +90,7 @@ async function add_game_quantity(user_id, game_id){
 
 
 async function subtract_game_quantity(user_id, game_id){
-    // try{
+    try{
         let cart_game = await get_user_game(user_id, game_id)
         let cost=cart_game.toJSON().game.cost
         let discount = cart_game.toJSON().game.discount
@@ -98,10 +98,10 @@ async function subtract_game_quantity(user_id, game_id){
 
         await subtract_quantity(user_id, game_id, cost_after_discount, 1)
         return true
-    // }catch(e){
+    }catch(e){
 
-    //     return false
-    // }
+        return false
+    }
 
 }
 

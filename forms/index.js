@@ -50,13 +50,13 @@ const create_game_form=(categories, content_tags, platforms)=>{
             'validators':[validators.integer()]
         }),
         'discount': fields.string({
-            "label":'Discount',
+            "label":'Discount (in n%)',
             "required":true,
             "errorAfterField":true,
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.integer()]
+            'validators':[validators.integer(), validators.max(100)]
         }),
         'description': fields.string({
             "label":'Description',
@@ -303,6 +303,14 @@ const create_search_form = (categories, content_tags, platforms) => {
                 "label": ['form-label']
             }
         }),
+        'company_name': fields.string({
+            "label":'Company Name',
+            "required":true,
+            "errorAfterField":true,
+            "cssClasses": {
+                "label": ['form-label']
+            }
+        }),
         'category_id': fields.string({
             label: 'Category',
             required: false,
@@ -312,15 +320,15 @@ const create_search_form = (categories, content_tags, platforms) => {
             widget: widgets.select(),
             choices: categories
         }),
-        // 'content_tags': fields.string({
-        //     label:'Tags',
-        //     required:false,
-        //     cssClasses: {
-        //         label: ['form-label']
-        //     },
-        //     widget: widgets.multipleSelect(),
-        //     choices: content_tags
-        // }),
+        'content_tags': fields.string({
+            label:'Tags',
+            required:false,
+            cssClasses: {
+                label: ['form-label']
+            },
+            widget: widgets.multipleSelect(),
+            choices: content_tags
+        }),
         'platforms': fields.string({
             label:'Platforms',
             required:false,
