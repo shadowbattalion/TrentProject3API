@@ -341,10 +341,41 @@ const create_search_form = (categories, content_tags, platforms) => {
     })
 }
 
+
+
+const create_search_order_form = () => {
+    return forms.create({
+        "display_name":fields.string({
+            "label":'Display Name',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            }
+        })
+    })
+}
+
+const create_update_order_form = () => {
+    return forms.create({
+        'status': fields.string({
+            label:'Update Order Status',
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label']
+            },
+            widget: widgets.select(),
+            choices: [["unpaid","unpaid"],["paid","paid"]]
+        }),
+
+    })
+
+}
+
 const create_tag_form = ""
 
 const create_category_form = ""
 
 
 
-module.exports = { bootstrap, create_game_form, create_user_reg_form, create_login_form, create_search_form, create_tag_form, create_category_form }
+module.exports = { bootstrap, create_game_form, create_user_reg_form, create_login_form, create_search_form, create_search_order_form, create_update_order_form, create_tag_form, create_category_form }
