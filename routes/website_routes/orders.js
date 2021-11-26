@@ -184,40 +184,39 @@ router.post('/:order_id/update', [auth_check], async(req,res)=>{
 })
 
 
-// router.get('/:game_id/delete', [auth_check], async(req,res)=>{
+router.get('/:order_id/delete', [auth_check], async(req,res)=>{
 
 
-//     const game_id = req.params.game_id
+    const order_id = req.params.order_id
 
-//     const game = await Game.where({
-//         'id':game_id
-//     }).fetch({
-//         require:true
-//     })
+    const order = await Order.where({
+        'id':order_id
+    }).fetch({
+        'require':true,
+        withRelated:['user','order_items.game']
+    })
 
-//     res.render('games/delete', {
-//         'game': game.toJSON()
-//     })
-// })
-
-
-
-// router.post('/:game_id/delete', [auth_check], async(req,res)=>{
+    res.render('orders/delete', {
+        'order': order.toJSON()
+    })
+})
 
 
-//     const game_id = req.params.game_id
+router.post('/:order_id/delete', [auth_check], async(req,res)=>{
 
-//     const game = await Game.where({
-//         'id':game_id
-//     }).fetch({
-//         require:true
-//     })
 
+    const order_id = req.params.order_id
+
+    const order = await Order.where({
+        'id':order_id
+    }).fetch({
+        'require':true
+    })
     
-//     req.flash("success_flash", `${game.get('title')} has been deleted`)
-//     await game.destroy();
+    req.flash("success_flash", `Order Number ${order.get('id')} has been deleted`)
+    await order.destroy();
     
-//     res.redirect('/list-games')
-// })
+    res.redirect('/orders')
+})
 
 module.exports = router

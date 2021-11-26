@@ -1,12 +1,7 @@
 {{#extends 'base'}}
 
 {{#block 'content'}}
-
-<form method="GET">
-   {{{form}}}
-    <input type="submit" value="Search" class="mb-3 mt-3 btn btn-primary" />
-</form>
-
+<h1>Are you sure you want to delete Order Number {{order.id}}?</h1>
 <table class="table">
     <thead>
         <tr>
@@ -18,42 +13,46 @@
             <th>Total</th>
             <th>Date, Time</th>
         </tr>
-    </thead>
-    <tbody>
-        {{#each orders}}
-            <tr>
-                 <td>
-                    {{this.id}}
+        <tr>
+                <td>
+                    {{order.id}}
                 </td>
                 <td>
-                    {{this.user.email}}
+                    {{order.user.email}}
                 </td>
                 <td>
-                    {{this.user.display_name}}
+                    {{order.user.display_name}}
                 </td>
                 <td>
-                    <a href="/orders/{{this.id}}/update" class="btn btn-primary btn-sm">{{this.status}}</a>
+                    {{order.status}}
                 </td>
                 <td>
                     <ul>
-                        {{#each this.order_items}}
+                        {{#each order.order_items}}
                             <li>{{this.game.title}} X {{this.quantity}}</li>
                         {{/each}}
                     </ul>
                 </td>
                 <td>
-                    {{this.total}}
+                    {{order.total}}
                 </td>
                 <td>
-                    {{this.date}}
-                </td>
-                <td>
-                    <a href="/orders/{{this.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
+                    {{order.date}}
                 </td>
             </tr>
-        {{/each}}
     </tbody>
 </table>
+
+<form method="POST">
+    <input type="hidden" name="_csrf" value="{{csrf}}"/>
+    <div class="alert alert-danger">
+        <input type="submit" class="btn btn-danger" value="Yes"/>
+        <a href="/orders" class="btn btn-success">No</a>
+    </div>
+</form>
+
+
 {{/block}}
 
 {{/extends}}
+
