@@ -10,81 +10,89 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 router.get('/', async (req, res) => {
     
-    //get all the items from the cart
-    let games_in_cart =  await get_cart_for_user(req.session.user.id)
-    
-    //create line items from user's shopping cart
-    let line_items_list=[]
-    let meta=[]
+    try{
+        //get all the items from the cart
+        let games_in_cart =  await get_cart_for_user(req.session.user.id)
+        
+        //create line items from user's shopping cart
+        let line_items_list=[]
+        let meta=[]
 
-    //push in user_id first
-    meta.push({
-        'user_id':req.session.user.id
-    })
-    //then group the game and its quantity into dictionary
-    let game_quantity = []
-    for(let cart_game of games_in_cart){
+        //push in user_id first
+        meta.push({
+            'user_id':req.session.user.id
+        })
+        //then group the game and its quantity into dictionary
+        let game_quantity = []
+        for(let cart_game of games_in_cart){
+
+            
+        
+
+            let cost = cart_game.related('game').get('cost')
+            let discount = cart_game.related('game').get('discount')
+            let cost_after_discount = Math.floor(((cost)*(1-discount/100)))
+
+            // console.log("========================")
+            // console.log(cart_game.related('game').get('title'))
+            // console.log(cost)
+            // console.log(discount)
+            // console.log(cost_after_discount)
+
+            const line_item={
+                'name':cart_game.related('game').get('title'),
+                'amount':cost_after_discount,
+                'quantity':cart_game.get('quantity'),
+                'currency':'SGD'
+            }
+            if(cart_game.related('game').get('banner_image')){
+                line_item['images']=[cart_game.related('game').get('banner_image')]
+            }
+            line_items_list.push(line_item)
+
+
+
+            game_quantity.push({
+                'game_id':cart_game.related('game').get('id'),
+                'quantity':cart_game.get('quantity') 
+            })
+
 
         
-    
 
-        let cost = cart_game.related('game').get('cost')
-        let discount = cart_game.related('game').get('discount')
-        let cost_after_discount = Math.floor(((cost)*(1-discount/100)))
-
-        // console.log("========================")
-        // console.log(cart_game.related('game').get('title'))
-        // console.log(cost)
-        // console.log(discount)
-        // console.log(cost_after_discount)
-
-        const line_item={
-            'name':cart_game.related('game').get('title'),
-            'amount':cost_after_discount,
-            'quantity':cart_game.get('quantity'),
-            'currency':'SGD'
         }
-        if(cart_game.related('game').get('banner_image')){
-            line_item['images']=[cart_game.related('game').get('banner_image')]
+        //then push the game-quantity object into meta
+        //Sample: [{ user_id: 1 },[{ game_id: 4, quantity: 1 },{ game_id: 5, quantity: 1 },{ game_id: 2, quantity: 3 }]]
+        meta.push(game_quantity)
+
+        let meta_JSON = JSON.stringify(meta)
+
+        
+        let payment = {
+            'payment_method_types':['card'],
+            'line_items':line_items_list,
+            'success_url':process.env.STRIPE_SUCCESS_URL,
+            'cancel_url':process.env.STRIPE_ERROR_URL,
+            'metadata':{
+                'orders':meta_JSON
+            }
+
         }
-        line_items_list.push(line_item)
 
+        let stripe_sess = await stripe.checkout.sessions.create(payment)
+        res.render('checkout/checkout',{
+            'session_id':stripe_sess.id,
+            'publishable_key':process.env.STRIPE_PUBLISHABLE_KEY
 
-
-        game_quantity.push({
-            'game_id':cart_game.related('game').get('id'),
-            'quantity':cart_game.get('quantity') 
         })
 
+    }catch(e){
 
-       
+        req.flash("error_flash", "Please add at least one item in the cart")
+        res.redirect('/cart')
 
-    }
-    //then push the game-quantity object into meta
-    //Sample: [{ user_id: 1 },[{ game_id: 4, quantity: 1 },{ game_id: 5, quantity: 1 },{ game_id: 2, quantity: 3 }]]
-    meta.push(game_quantity)
-
-    console.log(meta)
-    let meta_JSON = JSON.stringify(meta)
-
-    
-    let payment = {
-        'payment_method_types':['card'],
-        'line_items':line_items_list,
-        'success_url':process.env.STRIPE_SUCCESS_URL,
-        'cancel_url':process.env.STRIPE_ERROR_URL,
-        'metadata':{
-            'orders':meta_JSON
-        }
 
     }
-
-    let stripe_sess = await stripe.checkout.sessions.create(payment)
-    res.render('checkout/checkout',{
-        'session_id':stripe_sess.id,
-        'publishable_key':process.env.STRIPE_PUBLISHABLE_KEY
-
-    })
 
 
 })
