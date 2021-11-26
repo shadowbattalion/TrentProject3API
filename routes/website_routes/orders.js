@@ -21,7 +21,7 @@ router.get('/', [auth_check], async(req,res)=>{
         
     form.handle(req, {
         'empty': async (form) => {
-            console.log("TEST1")
+            
             let orders = await retreive_search.fetch({
                 require:false,
                 withRelated:['user','order_items.game']
@@ -40,7 +40,7 @@ router.get('/', [auth_check], async(req,res)=>{
 
         },
         'error': async (form) => {
-            console.log("TEST2")
+            
             let orders = await retreive_search.fetch({
                 require:false,
                 withRelated:['user','order_items.game']
@@ -61,14 +61,25 @@ router.get('/', [auth_check], async(req,res)=>{
 
         },
         'success': async (form) => {
-            console.log("TEST3")
-
             
+
             if (form.data.display_name) {
                 retreive_search = retreive_search.query('join', 'users', 'user_id', 'users.id')
-                .where('users.display_name', 'like', '%' + form.data.display_name+ '%')
+                .where('users.display_name', 'like', '%' + form.data.display_name + '%')
             }
 
+
+            if (form.data.status) {
+                let status
+                if(form.data.status==0){
+                    status="%%"
+                }else if(form.data.status==1){
+                    status="unpaid"
+                }else if(form.data.status==2){
+                    status="paid"
+                }
+                retreive_search = retreive_search.where('status', 'like', status);
+            }
 
             
             let orders = await retreive_search.fetch({
@@ -109,7 +120,10 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
 
     const order = await Order.where({
         'id':order_id
-    }).fetch()
+    }).fetch({
+        require:true,
+        withRelated:['user','order_items.game']
+    })
 
        
 
@@ -126,7 +140,7 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
 
 
 
-router.post('/:game_id/update', [auth_check], async(req,res)=>{
+router.post('/:order_id/update', [auth_check], async(req,res)=>{
 
 
     const order_id = req.params.order_id
@@ -138,14 +152,22 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
        
 
     const update_form = create_update_order_form()
-
     update_form.handle(req,{
         "success": async (form) => {
-            order.set(form.data.status)
+            
+            let status
+                       
+            if(form.data.status==1){
+                status="unpaid"
+            }else if(form.data.status==2){
+                status="paid"
+            }
+        
+            order.set({"status":status})
             await order.save()
             
-            req.flash("success_flash", `Order Number  has been updated`)
-            res.redirect(`/orders`)
+            req.flash("success_flash", `Order Number ${order.get('id')} has been updated to ${status}`)
+            res.redirect('/orders')
         },
         "error": async(form)=>{
             res.render('orders/update', {

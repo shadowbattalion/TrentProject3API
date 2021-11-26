@@ -351,6 +351,15 @@ const create_search_order_form = () => {
             "cssClasses": {
                 "label": ['form-label']
             }
+        }),
+        "status":fields.string({
+            "label":'Payment Status',
+            "required":false,
+            "cssClasses": {
+                "label": ['form-label']
+            },
+            widget: widgets.select(),
+            choices: [[0,"-------"],[1,"unpaid"],[2,"paid"]]
         })
     })
 }
@@ -365,7 +374,7 @@ const create_update_order_form = () => {
                 label: ['form-label']
             },
             widget: widgets.select(),
-            choices: [["unpaid","unpaid"],["paid","paid"]]
+            choices: [[1,"unpaid"],[2,"paid"]]
         }),
 
     })

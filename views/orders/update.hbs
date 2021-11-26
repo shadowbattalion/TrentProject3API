@@ -2,11 +2,54 @@
 
 {{#block 'content'}}
 <h1>Update Status of Order Number {{order.id}}?</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order Number</th>
+            <th>Email</th>
+            <th>Display Name</th>
+            <th>Satus</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Date, Time</th>
+        </tr>
+        <tr>
+                <td>
+                    {{order.id}}
+                </td>
+                <td>
+                    {{order.user.email}}
+                </td>
+                <td>
+                    {{order.user.display_name}}
+                </td>
+                <td>
+                    {{order.status}}
+                </td>
+                <td>
+                    <ul>
+                        {{#each order.order_items}}
+                            <li>{{this.game.title}} X {{this.quantity}}</li>
+                        {{/each}}
+                    </ul>
+                </td>
+                <td>
+                    {{order.total}}
+                </td>
+                <td>
+                    {{order.date}}
+                </td>
+            </tr>
+    </tbody>
+</table>
+
 <form method="POST">
     <input type="hidden" name="_csrf" value="{{csrf}}"/>
     {{{form}}}
     <input type="submit" value="Update Status" class="btn btn-primary"/>
 </form>
+
+
 {{/block}}
 
 {{/extends}}
