@@ -1,4 +1,4 @@
-const {add_user_to_order_dal, add_items_to_orderItems_dal} = require('../dal/order')
+const {add_user_to_order_dal, add_items_to_orderItems_dal, clear_user_cart_dal} = require('../dal/order')
 
 async function add_to_order_service(stripe_sess){
 
@@ -49,6 +49,11 @@ async function add_to_order_service(stripe_sess){
 
 
         }
+
+        //clear cart
+
+        await clear_user_cart_dal(user_id)
+
 
 
         return true

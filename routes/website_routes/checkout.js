@@ -109,6 +109,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
             let outcome = await add_to_order_service(stripe_sess)
             
+            
             if(outcome){
                 console.log("Orders recorded")                
             } else {
@@ -125,6 +126,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
             let stripe_sess = evt.data.object
 
             let outcome = await add_to_order_service(stripe_sess)
+            
             
             if(outcome){
                 console.log("Orders recorded")                
