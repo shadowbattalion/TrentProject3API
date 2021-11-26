@@ -57,22 +57,6 @@ const Review = bookshelf.model('Review',{
 })
 
 
-const User = bookshelf.model('User',{
-    tableName: 'users',
-    orders (){
-        return this.hasMany('Game')
-    }
-})
-
-
-const Order = bookshelf.model('Order',{
-    tableName: 'orders',
-    user(){
-        return this.belongsTo('user')
-    },
-})
-
-
 const CartGame = bookshelf.model('CartGame', {
     tableName: 'cart_games',
     game() {
@@ -82,6 +66,34 @@ const CartGame = bookshelf.model('CartGame', {
 })
 
 
+const User = bookshelf.model('User',{
+    tableName: 'users',
+    orders (){
+        return this.hasMany('Order')
+    }
+})
 
 
-module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame, Order}
+const Order = bookshelf.model('Order',{
+    tableName: 'orders',
+    user(){
+        return this.belongsTo('User')
+    },
+})
+
+
+const OrderItem = bookshelf.model('OrderItem', {
+    tableName: 'order_items',
+    order() {
+        return this.belongsTo('Order')
+    }
+
+})
+
+
+
+
+
+
+
+module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame, Order, OrderItem}

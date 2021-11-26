@@ -1,24 +1,26 @@
-const {add_user_to_order_dal} = require('../dal/order')
+const {add_user_to_order_dal, add_items_to_orderItems_dal} = require('../dal/order')
 
-async function add_user_to_order_service(stripe_sess){
+async function add_to_order_service(stripe_sess){
 
     
     try{
-        console.log(stripe_sess.metadata)
+        
         let user_id
+        let game_quantity 
 
         if(Object.keys(stripe_sess.metadata).length !== 0){
-            console.log(stripe_sess.metadata)
+            
             let user_orders = JSON.parse(stripe_sess.metadata.orders)
             user_id = user_orders[0].user_id
-            //other orders
+            game_quantity =  user_orders[1] //to be stored in orderItems table
+
         }else{
 
-            user_id = 1 // for testing webhook purpose, we need to create a user in the users table
+            user_id = 1 // for testing webhook purpose, we need to create a fake user in the users table
+            game_quantity = [{"game_id":1,"quantity":0}] // for testing webhook purpose, we need to create a fake game in the users table
         }
 
-        console.log(user_id)
-
+        
         let payment_method = stripe_sess.payment_method_types.join(',')
         let status = stripe_sess.payment_status
 
@@ -35,7 +37,20 @@ async function add_user_to_order_service(stripe_sess){
 
         
 
-        await add_user_to_order_dal(payment_method, status, total, current_date, user_id)
+        let saved_object = await add_user_to_order_dal(payment_method, status, total, current_date, user_id)
+
+        
+        //store in orderItems table
+        let order_id =  saved_object.attributes.id
+        for(let item of game_quantity){
+
+    
+            await add_items_to_orderItems_dal(order_id, item.game_id, item.quantity)
+
+
+        }
+
+
         return true
     } catch(e){
         return false
@@ -45,4 +60,4 @@ async function add_user_to_order_service(stripe_sess){
 }
 
 
-module.exports = {add_user_to_order_service}
+module.exports = {add_to_order_service}

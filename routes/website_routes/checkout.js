@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const {get_cart_for_user} = require('../../services/cart')
-const {add_user_to_order_service} = require('../../services/order')
+const {add_to_order_service} = require('../../services/order')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
@@ -107,7 +107,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
         if(evt.type == "checkout.session.completed"){
             let stripe_sess = evt.data.object
 
-            let outcome = await add_user_to_order_service(stripe_sess)
+            let outcome = await add_to_order_service(stripe_sess)
             
             if(outcome){
                 console.log("Orders recorded")                
@@ -124,7 +124,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
         if(evt.type == "checkout.session.expired"){
             let stripe_sess = evt.data.object
 
-            let outcome = await add_user_to_order_service(stripe_sess)
+            let outcome = await add_to_order_service(stripe_sess)
             
             if(outcome){
                 console.log("Orders recorded")                
