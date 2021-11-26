@@ -6,6 +6,12 @@ const {Order, OrderItem, Game } = require('../../models')
 const {bootstrap, create_search_order_form, create_update_order_form} = require('../../forms')
 const {auth_check} = require('../../middleware')
 
+const {
+    get_order_collection_service, 
+    search_service, get_order_service, 
+    get_order_and_update_status_service, 
+    get_order_delete_status_service
+}  = require('../../services/order')
 
 
 
@@ -13,26 +19,17 @@ const {auth_check} = require('../../middleware')
 
 router.get('/', [auth_check], async(req,res)=>{
 
-
-    let retreive_search = Order.collection()
+    let retreive_search = await get_order_collection_service()
 
     let form = create_search_order_form()
 
         
     form.handle(req, {
         'empty': async (form) => {
+           
             
-            let orders = await retreive_search.fetch({
-                require:false,
-                withRelated:['user','order_items.game']
-            })
-
-
-            let orders_json_list=[]
-            for(let order of orders.toJSON()){
-                order.date=order.date.toLocaleString('en-GB')
-                orders_json_list.push(order)
-            }
+            let orders_json_list = await search_service(form.data, 0, retreive_search)
+            
             res.render('orders/index', {
                 'orders':orders_json_list,
                 'form': form.toHTML(bootstrap)
@@ -41,19 +38,9 @@ router.get('/', [auth_check], async(req,res)=>{
         },
         'error': async (form) => {
             
-            let orders = await retreive_search.fetch({
-                require:false,
-                withRelated:['user','order_items.game']
-            })
+           
+            let orders_json_list = await search_service(form.data, 0, retreive_search)
 
-
-            let orders_json_list=[]
-            for(let order of orders.toJSON()){
-                order.date=order.date.toLocaleString('en-GB')
-                orders_json_list.push(order)
-            }
-
-            
             res.render('orders/index', {
                 'orders':orders_json_list,
                 'form': form.toHTML(bootstrap)
@@ -62,38 +49,9 @@ router.get('/', [auth_check], async(req,res)=>{
         },
         'success': async (form) => {
             
-
-            if (form.data.display_name) {
-                retreive_search = retreive_search.query('join', 'users', 'user_id', 'users.id')
-                .where('users.display_name', 'like', '%' + form.data.display_name + '%')
-            }
-
-
-            if (form.data.status) {
-                let status
-                if(form.data.status==0){
-                    status="%%"
-                }else if(form.data.status==1){
-                    status="unpaid"
-                }else if(form.data.status==2){
-                    status="paid"
-                }
-                retreive_search = retreive_search.where('status', 'like', status);
-            }
-
-            
-            let orders = await retreive_search.fetch({
-                require:false,
-                withRelated:['user','order_items.game']
-            })
-
-
-            let orders_json_list=[]
-            for(let order of orders.toJSON()){
-                order.date=order.date.toLocaleString('en-GB')
-                orders_json_list.push(order)
-            }
-
+                       
+            let orders_json_list = await search_service(form.data, 1, retreive_search)
+             
             
             res.render('orders/index', {
                 'orders':orders_json_list,
@@ -101,10 +59,7 @@ router.get('/', [auth_check], async(req,res)=>{
             })
         }
     })
-
-    
-
-
+ 
 
 })
 
@@ -118,18 +73,10 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
 
     const order_id = req.params.order_id
 
-    const order = await Order.where({
-        'id':order_id
-    }).fetch({
-        require:true,
-        withRelated:['user','order_items.game']
-    })
-
-       
+    const order = await get_order_service(order_id)    
 
     const update_form = create_update_order_form()
 
-    
     res.render('orders/update',{
         "order":order.toJSON(),
         "form":update_form.toHTML(bootstrap)   
@@ -142,32 +89,26 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
 
 router.post('/:order_id/update', [auth_check], async(req,res)=>{
 
-
-    const order_id = req.params.order_id
-
-    const order = await Order.where({
-        'id':order_id
-    }).fetch()
-
-       
-
     const update_form = create_update_order_form()
     update_form.handle(req,{
         "success": async (form) => {
             
-            let status
-                       
-            if(form.data.status==1){
-                status="unpaid"
-            }else if(form.data.status==2){
-                status="paid"
+            const order_id = req.params.order_id
+
+            let [outcome, status, id] = await get_order_and_update_status_service(form.data, order_id)
+            if (outcome){
+
+                req.flash("success_flash", `Order Number ${id} has been updated to ${status}`)
+                res.redirect('/orders')
+
+            }else{
+
+                req.flash("error_flash", `Order Number ${id} fail to be updated. Please try again.`)
+                res.redirect('/orders')
+
             }
-        
-            order.set({"status":status})
-            await order.save()
             
-            req.flash("success_flash", `Order Number ${order.get('id')} has been updated to ${status}`)
-            res.redirect('/orders')
+        
         },
         "error": async(form)=>{
             res.render('orders/update', {
@@ -179,9 +120,9 @@ router.post('/:order_id/update', [auth_check], async(req,res)=>{
 
 
 
-
-
 })
+
+
 
 
 router.get('/:order_id/delete', [auth_check], async(req,res)=>{
@@ -189,12 +130,7 @@ router.get('/:order_id/delete', [auth_check], async(req,res)=>{
 
     const order_id = req.params.order_id
 
-    const order = await Order.where({
-        'id':order_id
-    }).fetch({
-        'require':true,
-        withRelated:['user','order_items.game']
-    })
+    const order = await get_order_service(order_id)   
 
     res.render('orders/delete', {
         'order': order.toJSON()
@@ -207,16 +143,19 @@ router.post('/:order_id/delete', [auth_check], async(req,res)=>{
 
     const order_id = req.params.order_id
 
-    const order = await Order.where({
-        'id':order_id
-    }).fetch({
-        'require':true
-    })
+    let [outcome, id] = await get_order_delete_status_service(order_id)
+    if (outcome){
+
+        req.flash("success_flash", `Order Number ${id} has been deleted.`)
+        res.redirect('/orders')
+
+    }else{
+
+        req.flash("error_flash", `Order Number ${id} failed to be deleted`)
+        res.redirect('/orders')
+
+    }
     
-    req.flash("success_flash", `Order Number ${order.get('id')} has been deleted`)
-    await order.destroy();
-    
-    res.redirect('/orders')
 })
 
 module.exports = router

@@ -5,6 +5,7 @@ const router = express.Router()
 const {Game, Category, ContentTag, Platform, Image, Review} = require('../../models')
 const {bootstrap, create_game_form, create_search_form} = require('../../forms')
 const {auth_check} = require('../../middleware')
+const {get_all_games_from_cart}=require('../../dal/cart')
 
 
 
@@ -504,9 +505,33 @@ router.post('/:game_id/delete', [auth_check], async(req,res)=>{
         require:true
     })
 
+    let games_in_cart = await get_all_games_from_cart(game_id)
+
+
+    let game_ids=[]
+    for (let id of games_in_cart.toJSON()){
+
+        game_ids.push(id['game_id'])
+
+
+    }
+
+    console.log(game_ids)
+    console.log(game_ids.includes(parseInt(game_id)))
+
+    if(!game_ids.includes(parseInt(game_id))){
+
+        req.flash("success_flash", `${game.get('title')} has been deleted`)
+        await game.destroy();
+
+    } else{
+
+
+        req.flash("error_flash", `${game.get('title')} is still in a customer's cart`)
+
+    }
     
-    req.flash("success_flash", `${game.get('title')} has been deleted`)
-    await game.destroy();
+    
     
     res.redirect('/list-games')
 })

@@ -24,6 +24,18 @@ const get_user_game = async (user_id, game_id) => {
 
 
 
+async function get_all_games_from_cart (game_id){
+
+    let games_in_cart = await CartGame.where({
+        game_id
+    }).fetchAll({
+        require: false
+    });
+
+    return games_in_cart 
+}
+
+
 
 async function game_details(game_id){
 
@@ -89,4 +101,13 @@ async function subtract_quantity(user_id, game_id, cost_after_discount, new_quan
     await cart_game.save()   
 }
 
-module.exports = { get_cart, get_user_game, game_details, add_game_to_cart, remove_game_from_cart, add_quantity, subtract_quantity}
+module.exports = { 
+    get_cart, 
+    get_user_game,
+    game_details, 
+    add_game_to_cart, 
+    remove_game_from_cart, 
+    add_quantity, 
+    subtract_quantity,
+    get_all_games_from_cart
+}

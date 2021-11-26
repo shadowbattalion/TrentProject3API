@@ -1,4 +1,107 @@
-const {add_user_to_order_dal, add_items_to_orderItems_dal, clear_user_cart_dal} = require('../dal/order')
+const {
+    get_order_collection_dal, 
+    fetch_order_collection_dal, 
+    find_orders_dal, add_user_to_order_dal, 
+    add_items_to_orderItems_dal, clear_user_cart_dal
+} = require('../dal/order')
+
+
+
+
+async function get_order_collection_service(){
+    return await get_order_collection_dal()
+}
+
+
+
+
+function date_converter(list){
+
+    let new_list=[]
+    for(let item of list.toJSON()){
+        item.date=item.date.toLocaleString('en-GB')
+        new_list.push(item)
+    }
+    return new_list
+}
+
+
+
+
+async function search_service(form_data, pass_through, retreive_search){
+    
+    if (pass_through) {
+        retreive_search = retreive_search.query('join', 'users', 'user_id', 'users.id')
+        .where('users.display_name', 'like', '%' + form_data.display_name + '%')
+    }
+
+
+    if (pass_through) {
+        let status
+        if(form_data.status==0){
+            status="%%"
+        }else if(form_data.status==1){
+            status="unpaid"
+        }else if(form_data.status==2){
+            status="paid"
+        }
+        retreive_search = retreive_search.where('status', 'like', status);
+    }
+
+    let orders = await fetch_order_collection_dal(retreive_search)
+
+    return date_converter(orders)
+}
+
+
+async function get_order_service(order_id){
+
+    let order = await find_orders_dal(order_id)
+
+    return order
+}
+
+async function get_order_and_update_status_service(form_data, order_id){
+
+    try{
+        let order = await find_orders_dal(order_id)
+
+        let status
+                        
+        if(form_data.status==1){
+            status="unpaid"
+        }else if(form_data.status==2){
+            status="paid"
+        }
+            
+        order.set({"status":status})
+        await order.save()
+
+        return [true, status, order.get('id')]
+    } catch(e){
+        let status=""
+        return [false,status, order.get('id')]
+    }
+}
+
+
+
+async function get_order_delete_status_service(order_id){
+
+    try{
+        let order = await find_orders_dal(order_id)
+
+        let deleted_order_id=order.get('id')
+        await order.destroy()
+        
+        return [true, deleted_order_id]
+    } catch(e){
+        
+        return [false, deleted_order_id]
+    }
+}
+
+
 
 async function add_to_order_service(stripe_sess){
 
@@ -65,4 +168,10 @@ async function add_to_order_service(stripe_sess){
 }
 
 
-module.exports = {add_to_order_service}
+module.exports = {
+    get_order_collection_service,
+    search_service, get_order_service,
+    get_order_and_update_status_service, 
+    get_order_delete_status_service, 
+    add_to_order_service
+}
