@@ -17,7 +17,7 @@ async function add_to_order_service(stripe_sess){
         }else{
 
             user_id = 1 // for testing webhook purpose, we need to create a fake user in the users table
-            game_quantity = [{"game_id":1,"quantity":0}] // for testing webhook purpose, we need to create a fake game in the users table
+            game_quantity = [{"game_id":1,"quantity":0}] // for testing webhook purpose, we need to create a fake game in the cart
         }
 
         

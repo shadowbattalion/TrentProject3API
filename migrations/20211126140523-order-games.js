@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('order_items', {
+  return db.createTable('games_orders', {
     id: { type: 'int',  autoIncrement: true, unsigned: true, primaryKey: true},
     quantity: {type: 'int', unsigned:true},
     order_id: {
@@ -51,7 +51,7 @@ exports.up = function(db) {
 }
 
 exports.down = function(db) {
-  return db.dropTable('order_items')
+  return db.dropTable('games_orders')
 };
 
 exports._meta = {

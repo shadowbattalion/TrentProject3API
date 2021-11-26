@@ -93,9 +93,10 @@ app.use(function(req,res,next){
 const home_route = require('./routes/website_routes/home');
 const games_route = require('./routes/website_routes/games')
 const users_route = require('./routes/website_routes/users')
-const cloudinary_routes = require('./routes/website_routes/cloudinary.js')
-const cart_routes = require('./routes/website_routes/cart.js')
+const cloudinary_routes = require('./routes/website_routes/cloudinary')
+const cart_routes = require('./routes/website_routes/cart')
 const checkout_routes = require('./routes/website_routes/checkout')
+const order_routes = require('./routes/website_routes/orders')
 
 
 
@@ -107,6 +108,7 @@ async function main() {
     app.use('/cldnry', cloudinary_routes)
     app.use('/cart', cart_routes)
     app.use('/checkout', checkout_routes)
+    app.use('/orders', order_routes)
  
 }
 

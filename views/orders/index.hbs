@@ -1,0 +1,57 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+
+{{!-- <form method="GET">
+   {{{form}}}
+    <input type="submit" value="Search" class="mb-3 mt-3 btn btn-primary" />
+</form> --}}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Display Name</th>
+            <th>Satus</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Date</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        {{#each orders}}
+            <tr>
+                <td>
+                    {{this.user.email}}
+                </td>
+                <td>
+                    {{this.user.display_name}}
+                </td>
+                <td>
+                    {{this.status}}
+                </td>
+                <td>
+                    <ul>
+                        {{#each this.order_items}}
+                            <li>{{this.game.title}} X {{this.quantity}}</li>
+                        {{/each}}
+                    </ul>
+                </td>
+                <td>
+                    {{this.total}}
+                </td>
+                <td>
+                    {{this.date}}
+                </td>
+                <td>
+                    {{!-- <a href="/list-games/{{this.id}}/details" class="btn btn-primary btn-sm">Details</a>
+                    <a href="/cart/{{this.id}}/add" class="btn btn-success btn-sm">Add to cart</a> --}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/block}}
+
+{{/extends}}
