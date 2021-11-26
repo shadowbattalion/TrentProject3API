@@ -58,7 +58,18 @@ const Review = bookshelf.model('Review',{
 
 
 const User = bookshelf.model('User',{
-    tableName: 'users'
+    tableName: 'users',
+    orders (){
+        return this.hasMany('Game')
+    }
+})
+
+
+const Order = bookshelf.model('Order',{
+    tableName: 'orders',
+    user(){
+        return this.belongsTo('user')
+    },
 })
 
 
@@ -70,4 +81,7 @@ const CartGame = bookshelf.model('CartGame', {
 
 })
 
-module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame}
+
+
+
+module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame, Order}

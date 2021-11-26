@@ -33,7 +33,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return db.removeColumn('images', 'game_id');
+  return db.removeForeignKey('reviews', 'review_game_fk').then(()=>{return db.removeColumn('reviews', 'game_id')})
 };
 
 exports._meta = {

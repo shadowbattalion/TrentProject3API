@@ -15,25 +15,17 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addColumn('images', 'game_id',{
-    type: 'int',
-    unsigned:true,
-    notNull:true,
-    foreignKey: {
-      name:'image_game_fk',
-      table:'games',
-      rules:{
-        onDelete:'CASCADE',
-        onUpdate:'RESTRICT'
-      },
-      mapping: 'id'
-    }
-
+  return db.createTable('orders',{
+    id:{type: 'int', primaryKey:true, autoIncrement:true, unsigned: true},
+    payment_method:{type: 'string', length:20},
+    status:{type: 'string', length:50},
+    total:{type: 'real'},
+    date:{type: 'datetime'}
   })
 };
 
 exports.down = function(db) {
-  return db.removeForeignKey('images', 'image_game_fk').then(()=>{return db.removeColumn('images', 'game_id')})
+  return  db.dropTable('orders')
 };
 
 exports._meta = {

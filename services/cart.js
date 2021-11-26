@@ -1,4 +1,4 @@
-const { get_cart, get_user_game, game_details , add_game_to_cart, remove_game_from_cart, add_quantity, subtract_quantity} = require('../dal/cart_games')
+const { get_cart, get_user_game, game_details , add_game_to_cart, remove_game_from_cart, add_quantity, subtract_quantity} = require('../dal/cart')
 
 
 async function get_cart_for_user(user_id){

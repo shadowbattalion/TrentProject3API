@@ -2,7 +2,8 @@ const e = require('connect-flash');
 const express = require('express');
 const router = express.Router();
 
-const {get_cart_for_user, calculate_total, add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
+const {get_cart_for_user} = require('../../services/cart')
+const {add_user_to_order_service} = require('../../services/order')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
@@ -15,6 +16,13 @@ router.get('/', async (req, res) => {
     //create line items from user's shopping cart
     let line_items_list=[]
     let meta=[]
+
+    //push in user_id first
+    meta.push({
+        'user_id':req.session.user.id
+    })
+    //then group the game and its quantity into dictionary
+    let game_quantity = []
     for(let cart_game of games_in_cart){
 
         
@@ -40,14 +48,23 @@ router.get('/', async (req, res) => {
             line_item['images']=[cart_game.related('game').get('banner_image')]
         }
         line_items_list.push(line_item)
-        meta.push({
+
+
+
+        game_quantity.push({
             'game_id':cart_game.related('game').get('id'),
-            'quantity':cart_game.get('quantity') // why put second time
+            'quantity':cart_game.get('quantity') 
         })
 
 
-    }
+       
 
+    }
+    //then push the game-quantity object into meta
+    //Sample: [{ user_id: 1 },[{ game_id: 4, quantity: 1 },{ game_id: 5, quantity: 1 },{ game_id: 2, quantity: 3 }]]
+    meta.push(game_quantity)
+
+    console.log(meta)
     let meta_JSON = JSON.stringify(meta)
 
     
@@ -62,10 +79,7 @@ router.get('/', async (req, res) => {
 
     }
 
-    // console.log(process.env.STRIPE_ERROR_URL)
     let stripe_sess = await stripe.checkout.sessions.create(payment)
-    // console.log(stripe_sess)
-    // console.log("========================================================================================")
     res.render('checkout/checkout',{
         'session_id':stripe_sess.id,
         'publishable_key':process.env.STRIPE_PUBLISHABLE_KEY
@@ -75,7 +89,7 @@ router.get('/', async (req, res) => {
 
 })
 
-router.get('/process_payment',express.raw({type:"application/json"}), (req,res)=>{
+router.post('/process_payment',express.raw({type:"application/json"}), async (req,res)=>{
 
 
     let payload  = req.body
@@ -89,12 +103,39 @@ router.get('/process_payment',express.raw({type:"application/json"}), (req,res)=
     try{
         evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
         console.log(evt.type)
+        
         if(evt.type == "checkout.session.completed"){
             let stripe_sess = evt.data.object
-            console.log(stripe_sess)
+
+            let outcome = await add_user_to_order_service(stripe_sess)
+            
+            if(outcome){
+                console.log("Orders recorded")                
+            } else {
+                console.log("Orders fail")               
+            }
+
             res.send({
                 'received': true
             })
+
+
+        }
+        if(evt.type == "checkout.session.expired"){
+            let stripe_sess = evt.data.object
+
+            let outcome = await add_user_to_order_service(stripe_sess)
+            
+            if(outcome){
+                console.log("Orders recorded")                
+            } else {
+                console.log("Orders fail")               
+            }
+
+            res.send({
+                'received': true
+            })
+
 
 
         }
