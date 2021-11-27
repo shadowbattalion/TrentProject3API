@@ -90,25 +90,32 @@ app.use(function(req,res,next){
 
 
 //routes
-const home_route = require('./routes/website_routes/home');
-const games_route = require('./routes/website_routes/games')
-const users_route = require('./routes/website_routes/users')
-const cloudinary_routes = require('./routes/website_routes/cloudinary')
-const cart_routes = require('./routes/website_routes/cart')
-const checkout_routes = require('./routes/website_routes/checkout')
-const order_routes = require('./routes/website_routes/orders')
+const website={
+  "home_route" : require('./routes/website_routes/home'),
+  "games_route" : require('./routes/website_routes/games'),
+  "users_route" : require('./routes/website_routes/users'),
+  "cloudinary_routes" : require('./routes/website_routes/cloudinary'),
+  "cart_routes" : require('./routes/website_routes/cart'),
+  "checkout_routes" : require('./routes/website_routes/checkout'),
+  "order_routes" : require('./routes/website_routes/orders'),
+}
 
+const api = {
+  'games_route': require('./routes/api_routes/games')
+}
 
 
 async function main() {
 
-    app.use('/', home_route)
-    app.use('/list-games', games_route)
-    app.use('/users', users_route)
-    app.use('/cldnry', cloudinary_routes)
-    app.use('/cart', cart_routes)
-    app.use('/checkout', checkout_routes)
-    app.use('/orders', order_routes)
+    app.use('/', website.home_route)
+    app.use('/list-games', website.games_route)
+    app.use('/users', website.users_route)
+    app.use('/cldnry', website.cloudinary_routes)
+    app.use('/cart', website.cart_routes)
+    app.use('/checkout', website.checkout_routes)
+    app.use('/orders', website.order_routes)
+    app.use('/api/list-games', express.json() ,api.games_route)
+
  
 }
 

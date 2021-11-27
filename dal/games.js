@@ -1,6 +1,11 @@
 const {Game} = require('../models')
 
 
+async function get_all_games_dal(){
+
+    let game = await Game.where({'delete':0}).fetchAll()
+    return game
+}
 
 
 async function set_delete_flag_dal(game_id){
@@ -37,4 +42,4 @@ async function check_game_availability_dal(game_id){
 }
 
 
-module.exports = {set_delete_flag_dal, check_game_availability_dal}
+module.exports = {get_all_games_dal, set_delete_flag_dal, check_game_availability_dal}
