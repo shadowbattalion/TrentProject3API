@@ -1,5 +1,5 @@
 const { get_cart, get_user_game, game_details , add_game_to_cart, remove_game_from_cart, add_quantity, subtract_quantity} = require('../dal/cart')
-
+const {check_game_availability_dal} = require("../dal/games")
 
 async function get_cart_for_user(user_id){
     return await get_cart(user_id)
@@ -27,6 +27,8 @@ async function calculate_total(user_id){
 
 async function add_game (user_id, game_id){
     try{
+
+        await check_game_availability_dal(game_id)
         let cart_game = await get_user_game(user_id, game_id)
         
         

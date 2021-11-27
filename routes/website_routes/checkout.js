@@ -66,14 +66,14 @@ router.get('/', async (req, res) => {
         meta.push(game_quantity)
 
         let meta_JSON = JSON.stringify(meta)
-
+        let url = "https://3004-coral-krill-cl3xgfmb.ws-us17.gitpod.io"
         console.log(process.env.STRIPE_SUCCESS_URL)
         console.log(process.env.STRIPE_ERROR_URL)
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,
-            'success_url':process.env.STRIPE_SUCCESS_URL,
-            'cancel_url':process.env.STRIPE_ERROR_URL,
+            'success_url':url+process.env.STRIPE_SUCCESS_URL,
+            'cancel_url':url+process.env.STRIPE_ERROR_URL,
             'metadata':{
                 'orders':meta_JSON
             }

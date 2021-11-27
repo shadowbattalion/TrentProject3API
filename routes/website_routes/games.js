@@ -143,8 +143,9 @@ router.get('/:game_id/details', [auth_check], async(req,res)=>{
     try{
         const game_id = req.params.game_id
 
-        const game = await Game.where({
-            'id':game_id
+        const game = await Game.where({// dal/games
+            'id':game_id,
+            'delete':0
         }).fetch({
             require:true,
             withRelated:['category','content_tags', 'platforms', 'images', 'reviews']
