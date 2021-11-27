@@ -24,7 +24,7 @@ const get_user_game = async (user_id, game_id) => {
 
 
 
-async function get_all_games_from_cart (game_id){
+async function get_all_games_from_cart_dal(game_id){
 
     let games_in_cart = await CartGame.where({
         game_id
@@ -109,5 +109,5 @@ module.exports = {
     remove_game_from_cart, 
     add_quantity, 
     subtract_quantity,
-    get_all_games_from_cart
+    get_all_games_from_cart_dal
 }

@@ -67,7 +67,8 @@ router.get('/', async (req, res) => {
 
         let meta_JSON = JSON.stringify(meta)
 
-        
+        console.log(process.env.STRIPE_SUCCESS_URL)
+        console.log(process.env.STRIPE_ERROR_URL)
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,

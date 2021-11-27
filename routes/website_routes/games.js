@@ -5,8 +5,9 @@ const router = express.Router()
 const {Game, Category, ContentTag, Platform, Image, Review} = require('../../models')
 const {bootstrap, create_game_form, create_search_form} = require('../../forms')
 const {auth_check} = require('../../middleware')
-const {get_all_games_from_cart}=require('../../dal/cart')
-
+const {get_all_games_from_cart_dal}=require('../../dal/cart')
+const {get_all_games_unpaid_order_dal}=require('../../dal/order')
+const {set_delete_flag_dal}=require("../../dal/games")
 
 
 
@@ -45,12 +46,13 @@ router.get('/', [auth_check], async(req,res)=>{
 
 
             let games_json_list=[]
-                if(games.toJSON()){
-                for(let game of games.toJSON()){
+            for(let game of games.toJSON()){
+                if(game.delete==0){
                     game.added_date=game.added_date.toLocaleDateString('en-GB')
-                    games_json_list.push(game)
+                    games_json_list.push(game) 
                 }
             }
+    
             
             res.render('games/index', {
                 'games':games_json_list,
@@ -65,8 +67,10 @@ router.get('/', [auth_check], async(req,res)=>{
 
             let games_json_list=[]
             for(let game of games.toJSON()){
-                game.added_date=game.added_date.toLocaleDateString('en-GB')
-                games_json_list.push(game)
+                if(game.delete==0){
+                    game.added_date=game.added_date.toLocaleDateString('en-GB')
+                    games_json_list.push(game) 
+                }
             }
 
             
@@ -103,7 +107,7 @@ router.get('/', [auth_check], async(req,res)=>{
                 retreive_search = retreive_search.where('company_name', 'like', `%${form.data.company_name}%`);
             }
 
-            console.log(retreive_search.toJSON())
+            
             
             let games = await retreive_search.fetch()
 
@@ -111,8 +115,10 @@ router.get('/', [auth_check], async(req,res)=>{
 
             let games_json_list=[]
             for(let game of games.toJSON()){
-                game.added_date=game.added_date.toLocaleDateString('en-GB')
-                games_json_list.push(game)
+                if(game.delete==0){
+                    game.added_date=game.added_date.toLocaleDateString('en-GB')
+                    games_json_list.push(game) 
+                }
             }
 
             
@@ -224,7 +230,7 @@ router.post('/add', [auth_check], async(req,res)=>{
     game_form.handle(req,{
         "success": async(form)=>{
             let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
-
+            game_data['delete']=0
             const game=new Game(game_data)
             let saved_object = await game.save()
             
@@ -413,6 +419,7 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
     game_form.handle(req,{
         "success": async (form) => {
             let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            game_data['delete']=0
             game.set(game_data)
             await game.save()
             
@@ -505,32 +512,93 @@ router.post('/:game_id/delete', [auth_check], async(req,res)=>{
         require:true
     })
 
-    let games_in_cart = await get_all_games_from_cart(game_id)
+    let games_in_cart = await get_all_games_from_cart_dal(game_id)
 
 
-    let game_ids=[]
+    let game_ids_in_cart=[]
     for (let id of games_in_cart.toJSON()){
 
-        game_ids.push(id['game_id'])
+        game_ids_in_cart.push(id['game_id'])
 
 
     }
 
-    console.log(game_ids)
-    console.log(game_ids.includes(parseInt(game_id)))
 
-    if(!game_ids.includes(parseInt(game_id))){
+    let games_in_order = await get_all_games_unpaid_order_dal(game_id)
 
-        req.flash("success_flash", `${game.get('title')} has been deleted`)
-        await game.destroy();
+    let game_ids_unpaid_in_order = []
+    let game_ids_paid_in_order = []
+    for (let game of games_in_order.toJSON()){
 
+        if(game.order.status=="unpaid"){
+
+            game_ids_unpaid_in_order.push(game.game_id)
+
+        }
+
+        if(game.order.status=="paid"){
+
+            game_ids_paid_in_order.push(game.game_id)
+
+        }
+
+
+    }
+
+
+   
+
+    // console.log(game_ids)
+    // console.log(game_ids.includes(parseInt(game_id)))
+
+    let check_game_id_in_cart = game_ids_in_cart.includes(parseInt(game_id))
+    let check_game_id_unpaid_in_order = game_ids_unpaid_in_order.includes(parseInt(game_id))
+
+    
+    console.log(game_id)
+    console.log(game_ids_in_cart)
+    console.log(check_game_id_in_cart)
+    console.log("============================")
+    console.log(game_id)
+    console.log(game_ids_unpaid_in_order)
+    console.log(check_game_id_unpaid_in_order)
+    console.log("============================")
+
+    if(check_game_id_in_cart || check_game_id_unpaid_in_order){
+
+        let cart = ""
+        let order = ""
+
+        if(check_game_id_in_cart){
+            cart="cart"
+        }
+
+        if(check_game_id_unpaid_in_order){
+            order="order"
+        }
+
+        req.flash("error_flash", `${game.get('title')} is still in a customer's ${cart}/${order}`)
+
+        
     } else{
 
+       
 
-        req.flash("error_flash", `${game.get('title')} is still in a customer's cart`)
+        req.flash("success_flash", `${game.get('title')} has been deleted`)
+
+        if(game_ids_paid_in_order.includes(game_id)){
+
+            await set_delete_flag_dal(game_id) // if such games is not in customer's cart, and already paid, set delete flag
+
+        }else{
+            await game.destroy();
+        }
 
     }
     
+
+    
+
     
     
     res.redirect('/list-games')

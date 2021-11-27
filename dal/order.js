@@ -67,13 +67,36 @@ async function clear_user_cart_dal(user_id){
 
     const cart = await CartGame.where({
         'user_id':user_id
-    }).fetch({
+    }).fetchAll({
         require:true
     })
 
+    console.log(cart.toJSON())
+    for(let item of cart){
 
-    await cart.destroy();
+        await item.destroy()
 
+    }
+    
+
+}
+
+
+
+async function get_all_games_unpaid_order_dal (game_id){
+
+    let games_in_order = await OrderItem.where({
+        game_id
+    }).fetchAll({
+        require: false,
+        withRelated:['order']
+    });
+
+
+
+   
+
+    return games_in_order
 }
 
 
@@ -86,5 +109,6 @@ module.exports = {
     find_orders_dal,  
     add_user_to_order_dal, 
     add_items_to_orderItems_dal, 
-    clear_user_cart_dal
+    clear_user_cart_dal,
+    get_all_games_unpaid_order_dal
 }

@@ -305,8 +305,7 @@ const create_search_form = (categories, content_tags, platforms) => {
         }),
         'company_name': fields.string({
             "label":'Company Name',
-            "required":true,
-            "errorAfterField":true,
+            "required":false,
             "cssClasses": {
                 "label": ['form-label']
             }

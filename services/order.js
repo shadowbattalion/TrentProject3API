@@ -15,14 +15,26 @@ async function get_order_collection_service(){
 
 
 
-function date_converter(list){
-
+function dates_converter(list){
+    
     let new_list=[]
     for(let item of list.toJSON()){
         item.date=item.date.toLocaleString('en-GB')
         new_list.push(item)
     }
     return new_list
+}
+
+
+function date_converter(object){
+    
+   
+    object=object.toJSON()
+
+    object.date= object.date.toLocaleString('en-GB')
+
+
+    return object
 }
 
 
@@ -49,16 +61,16 @@ async function search_service(form_data, pass_through, retreive_search){
     }
 
     let orders = await fetch_order_collection_dal(retreive_search)
-
-    return date_converter(orders)
+    
+    return dates_converter(orders)
 }
 
 
 async function get_order_service(order_id){
 
     let order = await find_orders_dal(order_id)
-
-    return order
+    
+    return date_converter(order)
 }
 
 async function get_order_and_update_status_service(form_data, order_id){
@@ -86,7 +98,7 @@ async function get_order_and_update_status_service(form_data, order_id){
 
 
 
-async function get_order_delete_status_service(order_id){
+async function get_order_delete_service(order_id){
 
     try{
         let order = await find_orders_dal(order_id)
@@ -154,7 +166,7 @@ async function add_to_order_service(stripe_sess){
         }
 
         //clear cart
-
+        console.log(user_id)
         await clear_user_cart_dal(user_id)
 
 
@@ -172,6 +184,6 @@ module.exports = {
     get_order_collection_service,
     search_service, get_order_service,
     get_order_and_update_status_service, 
-    get_order_delete_status_service, 
+    get_order_delete_service, 
     add_to_order_service
 }

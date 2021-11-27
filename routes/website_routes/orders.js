@@ -10,7 +10,7 @@ const {
     get_order_collection_service, 
     search_service, get_order_service, 
     get_order_and_update_status_service, 
-    get_order_delete_status_service
+    get_order_delete_service
 }  = require('../../services/order')
 
 
@@ -78,7 +78,7 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
     const update_form = create_update_order_form()
 
     res.render('orders/update',{
-        "order":order.toJSON(),
+        "order":order,
         "form":update_form.toHTML(bootstrap)   
     })
 
@@ -112,7 +112,7 @@ router.post('/:order_id/update', [auth_check], async(req,res)=>{
         },
         "error": async(form)=>{
             res.render('orders/update', {
-                "order":order.toJSON(),
+                "order":order,
                 "form":update_form.toHTML(bootstrap) 
             })
         }
@@ -133,7 +133,7 @@ router.get('/:order_id/delete', [auth_check], async(req,res)=>{
     const order = await get_order_service(order_id)   
 
     res.render('orders/delete', {
-        'order': order.toJSON()
+        'order': order
     })
 })
 
@@ -143,7 +143,7 @@ router.post('/:order_id/delete', [auth_check], async(req,res)=>{
 
     const order_id = req.params.order_id
 
-    let [outcome, id] = await get_order_delete_status_service(order_id)
+    let [outcome, id] = await get_order_delete_service(order_id)
     if (outcome){
 
         req.flash("success_flash", `Order Number ${id} has been deleted.`)
