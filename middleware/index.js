@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 
 
 
@@ -11,8 +12,33 @@ const auth_check = (req, res, next) => {
     }
 }
 
+const auth_check_api = (req, res, next) => {
+    
+    const header = req.headers.authorization
+                   
+   
+    if (header) {
+        
+        const token_from_user  = header.split(' ')[1]
+      
+        jwt.verify(token_from_user, process.env.TOKEN_SECRET, (err,user)=>{
+            if(err){
+                res.sendStatus(403)
+            } else {
+                req.user = user
+                next()
+            }
+
+        })
+
+    } else {
+
+        res.sendStatus(401)
+
+    }
+
+}
 
 
 
-
-module.exports = {auth_check}
+module.exports = {auth_check, auth_check_api}
