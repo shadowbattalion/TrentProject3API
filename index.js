@@ -2,6 +2,7 @@ const express = require("express")
 const hbs = require("hbs")
 const wax = require("wax-on")
 require("dotenv").config()
+const cors = require('cors')
 
 const session = require('express-session')
 const flash = require('connect-flash')
@@ -10,6 +11,9 @@ const csrf = require('csurf')
 
 
 let app = express()
+
+// cors
+app.use(cors())
 
 //HBS
 app.set("view engine", "hbs")
@@ -125,7 +129,7 @@ async function main() {
 
 main()
 
-app.listen(3004, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server has started");
 })
 
