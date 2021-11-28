@@ -230,15 +230,25 @@ router.post('/add', [auth_check], async(req,res)=>{
     const game_form = create_game_form(categories, content_tags, platforms)
     game_form.handle(req,{
         "success": async(form)=>{
-            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, cost, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, url_1_thumbnail, url_2_thumbnail, url_3_thumbnail, url_4_thumbnail, url_5_thumbnail, cost, ...game_data}=form.data
             game_data['delete']=0
             game_data['cost']=parseFloat(cost).toFixed(2)
             const game=new Game(game_data)
             let saved_object = await game.save()
+
+            let combined_urls = []
+            let urls =  [url_1, url_2, url_3, url_4, url_5]
+            let url_thumbnails = [url_1_thumbnail, url_2_thumbnail, url_3_thumbnail, url_4_thumbnail, url_5_thumbnail]
+            for (let i = 0; i<urls.length; i++){
+
+                combined_urls.push([urls[i],url_thumbnails[i]])
+
+            }
+
             
-            for (let url of [url_1, url_2, url_3, url_4, url_5]){
+            for (let combined_url of combined_urls){
                
-                let image_object = new Image({'game_id':saved_object.attributes.id, 'url':url})
+                let image_object = new Image({'game_id':saved_object.attributes.id, 'url':combined_url[0], 'url_thumbnail':combined_url[1]})
                 await image_object.save()
             }
 
@@ -329,12 +339,20 @@ router.get('/:game_id/update', [auth_check], async(req,res)=>{
     game_form.fields.review_5.value = reviews[4]
 
     game_form.fields.banner_image.value = game.get('banner_image')
+    game_form.fields.banner_image_thumbnail.value = game.get('banner_image_thumbnail')
     let images = await game.related('images').pluck('url')
     game_form.fields.url_1.value = images[0]
     game_form.fields.url_2.value = images[1]
     game_form.fields.url_3.value = images[2]
     game_form.fields.url_4.value = images[3]
     game_form.fields.url_5.value = images[4]
+
+    let images_thumbnail = await game.related('images').pluck('url_thumbnail')
+    game_form.fields.url_1_thumbnail.value = images_thumbnail[0]
+    game_form.fields.url_2_thumbnail.value = images_thumbnail[1]
+    game_form.fields.url_3_thumbnail.value = images_thumbnail[2]
+    game_form.fields.url_4_thumbnail.value = images_thumbnail[3]
+    game_form.fields.url_5_thumbnail.value = images_thumbnail[4]
 
     game_form.fields.company_name.value = game.get('company_name')
     game_form.fields.added_date.value = game.get('added_date')
@@ -346,6 +364,8 @@ router.get('/:game_id/update', [auth_check], async(req,res)=>{
 
     let platforms_chosen = await game.related('platforms').pluck('id')
     game_form.fields.platforms.value = platforms_chosen
+
+
 
     res.render('games/update',{
         "form":game_form.toHTML(bootstrap),
@@ -420,14 +440,21 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
 
     game_form.handle(req,{
         "success": async (form) => {
-            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, cost, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, url_1_thumbnail, url_2_thumbnail, url_3_thumbnail, url_4_thumbnail, url_5_thumbnail, cost, ...game_data}=form.data
             game_data['delete']=0
             game_data['cost']=parseFloat(cost).toFixed(2)
             game.set(game_data)
             await game.save()
             
             //update images based on array of image ids
-            let urls = [url_1, url_2, url_3, url_4, url_5]
+            let combined_urls = []
+            let urls =  [url_1, url_2, url_3, url_4, url_5]
+            let url_thumbnails = [url_1_thumbnail, url_2_thumbnail, url_3_thumbnail, url_4_thumbnail, url_5_thumbnail]
+            for (let i = 0; i<urls.length; i++){
+
+                combined_urls.push([urls[i],url_thumbnails[i]])
+
+            }
 
             images_object.forEach(async (key, i) => {
                 
@@ -437,7 +464,7 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
                     require:true
                 })
                 
-                image.set({"url": urls[i]})
+                image.set({'url':combined_urls[i][0], 'url_thumbnail':combined_urls[i][1]})
                 await image.save()
 
             

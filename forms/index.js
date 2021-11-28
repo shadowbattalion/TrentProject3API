@@ -91,7 +91,13 @@ const create_game_form=(categories, content_tags, platforms)=>{
         'banner_image': fields.string({
             "label":'Banner Image',
             "required":true,
-            "errorAfterField":true
+            "errorAfterField":true,
+            // widget: widgets.hidden()
+        }),
+        'banner_image_thumbnail': fields.string({
+            "label":'Banner Image Thumbnail',
+            "required":true,
+            "errorAfterField":true,
             // widget: widgets.hidden()
         }),
         'url_1': fields.string({
@@ -116,6 +122,31 @@ const create_game_form=(categories, content_tags, platforms)=>{
         }),
         'url_5': fields.string({
             "label":'Game Image 5',
+            "required":false,
+            widget: widgets.hidden()
+        }),
+        'url_1_thumbnail': fields.string({
+            "label":'Game Image 1 Thumbnail',
+            "required":false,
+            // widget: widgets.hidden()
+        }),
+        'url_2_thumbnail': fields.string({
+            "label":'Game Image 2 Thumbnail',
+            "required":false,
+            // widget: widgets.hidden()
+        }),
+        'url_3_thumbnail': fields.string({
+            "label":'Game Image 3 Thumbnail',
+            "required":false,
+            widget: widgets.hidden()
+        }),
+        'url_4_thumbnail': fields.string({
+            "label":'Game Image 4 Thumbnail',
+            "required":false,
+            widget: widgets.hidden()
+        }),
+        'url_5_thumbnail': fields.string({
+            "label":'Game Image 5 Thumbnail',
             "required":false,
             widget: widgets.hidden()
         }),

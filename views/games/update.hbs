@@ -7,35 +7,35 @@
     {{{form}}}
     <div>
         Banner Image:
-        {{#if game.banner_image}}
-            <img src="{{game.banner_image}}" id="uploaded_image_banner" style="display:none"/>
+        {{!-- {{#if game.banner_image_thumbnail}} --}}
+            <img src="{{game.banner_image_thumbnail}}" id="uploaded_image_banner" />
             <a href="#" id="upload_widget_banner_image" class="btn btn-primary">Upload Banner</a>
-        {{/if}}
+        {{!-- {{/if}} --}}
         Image 1:
-        {{#if game.url_1}}
-            <img src="" id="uploaded_image_1" style="display:none"/>
+        {{!-- {{#if game.url_1_thumbnail}} --}}
+            <img src="" id="uploaded_image_1" />
             <a href="#" id="upload_widget_image_1" class="btn btn-primary">Upload Image 1</a>
-        {{/if}}
+        {{!-- {{/if}} --}}
         Image 2:
-        {{#if game.url_2}}
-            <img src="" id="uploaded_image_2" style="display:none"/>
+        {{!-- {{#if game.url_2_thumbnail}} --}}
+            <img src="" id="uploaded_image_2"/>
             <a href="#" id="upload_widget_image_2" class="btn btn-primary">Upload Image 2</a>
-        {{/if}}
+        {{!-- {{/if}} --}}
         Image 3:
-        {{#if game.url_3}}
-            <img src="" id="uploaded_image_3" style="display:none"/>
+        {{!-- {{#if game.url_3_thumbnail}} --}}
+            <img src="" id="uploaded_image_3"/>
             <a href="#" id="upload_widget_image_3" class="btn btn-primary">Upload Image 3</a>
-        {{/if}}
+        {{!-- {{/if}} --}}
         Image 4:
-        {{#if game.url_4}}
-            <img src="" id="uploaded_image_4" style="display:none"/>
+        {{!-- {{#if game.url_4_thumbnail}} --}}
+            <img src="" id="uploaded_image_4"/>
             <a href="#" id="upload_widget_image_4" class="btn btn-primary">Upload Image 4</a>
-        {{/if}}
+        {{!-- {{/if}} --}}
         Image 5:
-        {{#if game.url_5}}
-            <img src="" id="uploaded_image_5" style="display:none"/>
+        {{!-- {{#if game.url_5_thumbnail}} --}}
+            <img src="" id="uploaded_image_5"/>
             <a href="#" id="upload_widget_image_5" class="btn btn-primary">Upload Image 5</a> 
-        {{/if}}
+        {{!-- {{/if}} --}}
     </div>
     <input type="submit" value="Update This Game" class="btn btn-primary"/>
 </form>
@@ -55,7 +55,7 @@ function signature(callback, signature_params){
     axios.get('/cldnry/cldnry-sign',{params:{signature_params}}).then(function(response){callback(response.data)})
 }
 
-var myWidget = (banner_url, banner_uploaded) => { 
+var myWidget = (url, url_thumbnail, uploaded) => { 
     
 
 
@@ -67,20 +67,21 @@ var myWidget = (banner_url, banner_uploaded) => {
         uploadSignature: signature
     }, (error, result) => {
         if (!error && result && result.event === "success") {
-        document.querySelector(banner_url).value = result.info.url;
-        document.querySelector(banner_uploaded).src = result.info.thumbnail_url;
-        document.querySelector(banner_uploaded).style.display = 'inline';
+        document.querySelector(url).value = result.info.url;
+        document.querySelector(url_thumbnail).value = result.info.thumbnail_url;
+        document.querySelector(uploaded).src = result.info.thumbnail_url;
+        document.querySelector(uploaded).style.display = 'inline';
         }
     })
 
 }
 
-document.getElementById("upload_widget_banner_image").addEventListener("click", () => {myWidget('#id_banner_image','#uploaded_image_banner').open()}, false);
-document.getElementById("upload_widget_image_1").addEventListener("click", () => {myWidget('#id_url_1','#uploaded_image_1').open()}, false);
-document.getElementById("upload_widget_image_2").addEventListener("click", () => {myWidget('#id_url_2','#uploaded_image_2').open()}, false);
-document.getElementById("upload_widget_image_3").addEventListener("click", () => {myWidget('#id_url_3','#uploaded_image_3').open()}, false);
-document.getElementById("upload_widget_image_4").addEventListener("click", () => {myWidget('#id_url_4','#uploaded_image_4').open()}, false);
-document.getElementById("upload_widget_image_5").addEventListener("click", () => {myWidget('#id_url_5','#uploaded_image_5').open()}, false);
+document.getElementById("upload_widget_banner_image").addEventListener("click", () => {myWidget('#id_banner_image', '#id_banner_image_thumbnail','#uploaded_image_banner').open()}, false);
+document.getElementById("upload_widget_image_1").addEventListener("click", () => {myWidget('#id_url_1','#id_url_1_thumbnail','#uploaded_image_1').open()}, false);
+document.getElementById("upload_widget_image_2").addEventListener("click", () => {myWidget('#id_url_2','#id_url_2_thumbnail','#uploaded_image_2').open()}, false);
+document.getElementById("upload_widget_image_3").addEventListener("click", () => {myWidget('#id_url_3','#id_url_3_thumbnail','#uploaded_image_3').open()}, false);
+document.getElementById("upload_widget_image_4").addEventListener("click", () => {myWidget('#id_url_4','#id_url_4_thumbnail','#uploaded_image_4').open()}, false);
+document.getElementById("upload_widget_image_5").addEventListener("click", () => {myWidget('#id_url_5','#id_url_5_thumbnail','#uploaded_image_5').open()}, false);
 
 </script>
 
