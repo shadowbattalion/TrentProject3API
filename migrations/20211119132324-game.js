@@ -27,7 +27,8 @@ exports.up = function(db) {
     banner_image_thumbnail:{type: 'string', length:300},
     company_name:{type: 'string', length:100},
     added_date:{type: 'date'},
-    released_date:{type: 'date'}
+    released_date:{type: 'date'},
+    delete:{type: 'int', notNull:false}
   })
 };
 
