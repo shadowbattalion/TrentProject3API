@@ -625,7 +625,7 @@ router.post('/:game_id/delete', [auth_check], async(req,res)=>{
 
         }else{
             console.log("delete")
-            // await game.destroy();
+            await game.destroy();
         }
 
     }
