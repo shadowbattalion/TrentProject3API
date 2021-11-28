@@ -97,9 +97,11 @@ const OrderItem = bookshelf.model('OrderItem', {
 })
 
 
+const BlackList = bookshelf.model('BlackList',{
+    tableName: 'blacklisted_tokens',
+})
 
 
 
 
-
-module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame, Order, OrderItem}
+module.exports={Game, Category, ContentTag, Platform, Image, Review, User, CartGame, Order, OrderItem, BlackList}

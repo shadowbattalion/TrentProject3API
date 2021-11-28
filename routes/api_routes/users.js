@@ -4,8 +4,8 @@ const router =express.Router()
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const {User} = require("../../models")
-const {auth_check_api} = require('../../middleware')
+const {User, BlackList} = require("../../models")
+const {auth_check_api,refresh_check_api} = require('../../middleware')
 
 
 
@@ -46,10 +46,8 @@ router.post('/user-login', async (req,res)=>{
         let user = null
 
         if(user_email){
-            console.log(user_email.toJSON())
             user=user_email
         }else if(user_display_name){
-            console.log(user_display_name.toJSON())
             user=user_display_name
         }
                 
@@ -58,8 +56,8 @@ router.post('/user-login', async (req,res)=>{
         if (user.get('password') === password_hash(req.body.password)) {
 
                     let access_token = create_token(user.toJSON(), process.env.TOKEN_SECRET,'1h')
-                    res.send(access_token)
-
+                    let refresh_token = create_token(user.toJSON(), process.env.REFRESH_TOKEN_SECRET,'3w')
+                    res.json({access_token,refresh_token})
                 } else {
                     res.json({
                         'error':'Wrong email or password'
@@ -69,6 +67,47 @@ router.post('/user-login', async (req,res)=>{
 
             }
             
+
+})
+
+
+router.post('/user-refresh', [refresh_check_api], async (req,res)=>{
+
+    const black_list_tokens = await BlackList.where({
+        'token':req.body.refresh_token
+    }).fetch({
+        'require':false
+    })
+    
+    if(black_list_tokens){
+        res.status(401)
+        res.json({
+            'message':"This token has already expired"
+        })
+    } else {
+
+        let access_token = create_token(req.user, process.env.TOKEN_SECRET,'1h') // front end must send the refresh request before the access_token expires for seamless experience over long periods
+        res.json({access_token})
+
+    }
+
+    
+    
+})
+
+
+
+
+
+router.post('/user-logout', [refresh_check_api], async (req,res)=>{
+
+    
+    const black_list_token = new BlackList({'token':req.body.refresh_token, 'date': new Date()})
+    await black_list_token.save()
+    res.json({
+        'message':"Logged out successfully!"
+    })
+
 
 })
 

@@ -12,6 +12,8 @@ const auth_check = (req, res, next) => {
     }
 }
 
+
+
 const auth_check_api = (req, res, next) => {
     
     const header = req.headers.authorization
@@ -41,4 +43,36 @@ const auth_check_api = (req, res, next) => {
 
 
 
-module.exports = {auth_check, auth_check_api}
+const refresh_check_api = (req, res, next) => {
+
+
+    const token_from_user  = req.body.refresh_token
+                   
+   
+    if (token_from_user) {
+        
+        jwt.verify(token_from_user, process.env.REFRESH_TOKEN_SECRET, (err,user)=>{
+            if(err){
+                res.sendStatus(403)
+            } else {
+
+                req.user = user
+                next()
+                
+            }
+    
+        })
+
+    } else {
+
+        res.sendStatus(401)
+
+    }
+
+    
+    
+}
+
+
+
+module.exports = {auth_check, auth_check_api, refresh_check_api}
