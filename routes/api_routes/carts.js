@@ -3,12 +3,12 @@ const router = express.Router()
 
 
 const {get_cart_for_user, calculate_total, add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
-const {refresh_check_api} = require('../../middleware')
+const {auth_check_api} = require('../../middleware')
 
-router.get('/', [refresh_check_api], async (req,res)=>{
+router.get('/', [auth_check_api], async (req,res)=>{
 
-    let cart_games = await get_cart_for_user(1)
-    let total = await calculate_total(1)
+    let cart_games = await get_cart_for_user(req.user.id)
+    let total = await calculate_total(req.user.id)
 
     res.json({
         cart_games,
@@ -20,13 +20,13 @@ router.get('/', [refresh_check_api], async (req,res)=>{
 
 
 
-router.get('/:game_id/add', [refresh_check_api], async function(req, res){
+router.post('/:game_id/add', [auth_check_api], async function(req, res){
        
-    let outcome = await add_game(req.session.user.id, req.params.game_id)
+    let outcome = await add_game(req.user.id, req.params.game_id)
     if(outcome){
 
         res.json({
-            outcome
+            "message":outcome
         })
             
     }else{
@@ -41,13 +41,13 @@ router.get('/:game_id/add', [refresh_check_api], async function(req, res){
 })
 
 
-router.post('/:game_id/delete', [refresh_check_api], async function(req,res){
+router.post('/:game_id/delete', [auth_check_api], async function(req,res){
 
 
-    let outcome = await remove_game(req.session.user.id, req.params.game_id)
+    let outcome = await remove_game(req.user.id, req.params.game_id)
     if(outcome){
         res.json({
-            outcome
+            "message":outcome
         })               
     } else {
         res.json({
@@ -55,19 +55,19 @@ router.post('/:game_id/delete', [refresh_check_api], async function(req,res){
         })              
     }
 
-    res.redirect('/cart')
+    
 
 })
 
 
-router.post('/:game_id/quantity/add', [refresh_check_api],  async function(req,res){
-    
-    let outcome = await add_game_quantity(req.session.user.id, req.params.game_id)
+router.put('/:game_id/quantity/add', [auth_check_api],  async function(req,res){
+
+    let outcome = await add_game_quantity(req.user.id, req.params.game_id)
 
 
     if(outcome){
         res.json({
-            outcome
+            "message":outcome
         })               
     } else {
         res.json({
@@ -80,14 +80,14 @@ router.post('/:game_id/quantity/add', [refresh_check_api],  async function(req,r
 })
 
 
-router.post('/:game_id/quantity/subtract', [refresh_check_api],  async function(req,res){
+router.put('/:game_id/quantity/subtract', [auth_check_api],  async function(req,res){
     
-    let outcome = subtract_game_quantity(req.session.user.id, req.params.game_id)
+    let outcome = subtract_game_quantity(req.user.id, req.params.game_id)
 
 
     if(outcome){
         res.json({
-            outcome
+            "message":outcome
         })               
     } else {
         res.json({
@@ -95,7 +95,7 @@ router.post('/:game_id/quantity/subtract', [refresh_check_api],  async function(
         })              
     }
 
-    res.redirect("/cart")
+   
 
 })
 
