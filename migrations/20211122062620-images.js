@@ -17,7 +17,8 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.createTable('images',{
     id: {type: 'int', primaryKey:true, autoIncrement:true, unsigned: true},
-    url: {type: 'string', length:300}
+    url: {type: 'string', length:300},
+    url_thumbnail: {type: 'string', length:300}
   })
 };
 

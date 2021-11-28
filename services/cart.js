@@ -38,7 +38,7 @@ async function add_game (user_id, game_id){
             
             let cost=cart_game.toJSON().game.cost
             let discount = cart_game.toJSON().game.discount
-            let cost_after_discount = ((cost/100)*(1-discount/100)).toFixed(2)
+            let cost_after_discount = ((cost)*(1-discount/100)).toFixed(2)
 
             await add_quantity(user_id, game_id, cost_after_discount, 1)
             return true
@@ -49,7 +49,7 @@ async function add_game (user_id, game_id){
 
             let cost = game.toJSON().cost
             let discount = game.toJSON().discount
-            let cost_after_discount = ((cost/100)*(1-discount/100)).toFixed(2)
+            let cost_after_discount = ((cost)*(1-discount/100)).toFixed(2)
             
             await add_game_to_cart(user_id, game_id, cost_after_discount, 1)
             return true
@@ -79,7 +79,7 @@ async function add_game_quantity(user_id, game_id){
         let cart_game = await get_user_game(user_id, game_id)
         let cost=cart_game.toJSON().game.cost
         let discount = cart_game.toJSON().game.discount
-        let cost_after_discount = ((cost/100)*(1-discount/100)).toFixed(2)
+        let cost_after_discount = ((cost)*(1-discount/100)).toFixed(2)
 
         await add_quantity(user_id, game_id, cost_after_discount, 1)
         return true
@@ -96,7 +96,7 @@ async function subtract_game_quantity(user_id, game_id){
         let cart_game = await get_user_game(user_id, game_id)
         let cost=cart_game.toJSON().game.cost
         let discount = cart_game.toJSON().game.discount
-        let cost_after_discount = ((cost/100)*(1-discount/100)).toFixed(2)
+        let cost_after_discount = ((cost)*(1-discount/100)).toFixed(2)
 
         await subtract_quantity(user_id, game_id, cost_after_discount, 1)
         return true

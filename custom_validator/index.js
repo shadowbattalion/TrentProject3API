@@ -48,4 +48,26 @@ const validate_exist_display_name = function (message) {
     return check
 }
 
-module.exports = {validate_exist_email, validate_exist_display_name}
+
+
+const validate_decimal = function(message){
+    let msg = message || 'Input should be in numbers or decimals.'
+
+    let check = async function (form, field, callback) {
+
+        field.data
+        
+        if (isNaN(field.data)) {
+            callback(msg)
+        } else {
+            callback()
+        }
+    }
+
+
+
+    return check
+
+}
+
+module.exports = {validate_exist_email, validate_exist_display_name, validate_decimal}

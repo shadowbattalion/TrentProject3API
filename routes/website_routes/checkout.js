@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
 
             let cost = cart_game.related('game').get('cost')
             let discount = cart_game.related('game').get('discount')
-            let cost_after_discount = Math.floor(((cost)*(1-discount/100)))
+            let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
 
             // console.log("========================")
             // console.log(cart_game.related('game').get('title'))
@@ -66,9 +66,8 @@ router.get('/', async (req, res) => {
         meta.push(game_quantity)
 
         let meta_JSON = JSON.stringify(meta)
-        let url = "https://3004-coral-krill-cl3xgfmb.ws-us17.gitpod.io"
-        console.log(process.env.STRIPE_SUCCESS_URL)
-        console.log(process.env.STRIPE_ERROR_URL)
+        let url = "https://3004-coral-krill-cl3xgfmb.ws-prod-ws-us19.gitpod.io"
+        
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,

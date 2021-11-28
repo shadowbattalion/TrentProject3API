@@ -4,7 +4,7 @@ const validators = forms.validators
 const widgets = forms.widgets
 
 
-const {validate_exist_email, validate_exist_display_name} = require('../custom_validator')
+const {validate_exist_email, validate_exist_display_name, validate_decimal} = require('../custom_validator')
 
 
 
@@ -47,16 +47,16 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.integer()]
+            'validators':[validate_decimal()]
         }),
         'discount': fields.string({
-            "label":'Discount (in n%)',
+            "label":'Discount (in n)',
             "required":true,
             "errorAfterField":true,
             "cssClasses": {
                 "label": ['form-label']
             },
-            'validators':[validators.integer(), validators.max(100)]
+            'validators':[validators.max(100), validators.integer()]
         }),
         'description': fields.string({
             "label":'Description',

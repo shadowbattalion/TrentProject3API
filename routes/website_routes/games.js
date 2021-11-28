@@ -230,8 +230,9 @@ router.post('/add', [auth_check], async(req,res)=>{
     const game_form = create_game_form(categories, content_tags, platforms)
     game_form.handle(req,{
         "success": async(form)=>{
-            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, cost, ...game_data}=form.data
             game_data['delete']=0
+            game_data['cost']=parseFloat(cost).toFixed(2)
             const game=new Game(game_data)
             let saved_object = await game.save()
             
@@ -419,8 +420,9 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
 
     game_form.handle(req,{
         "success": async (form) => {
-            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, ...game_data}=form.data
+            let {content_tags, platforms, review_1, review_2, review_3, review_4, review_5, url_1, url_2, url_3, url_4, url_5, cost, ...game_data}=form.data
             game_data['delete']=0
+            game_data['cost']=parseFloat(cost).toFixed(2)
             game.set(game_data)
             await game.save()
             
