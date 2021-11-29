@@ -92,13 +92,13 @@ const create_game_form=(categories, content_tags, platforms)=>{
             "label":'Banner Image',
             "required":true,
             "errorAfterField":true,
-            // widget: widgets.hidden()
+            widget: widgets.hidden()
         }),
         'banner_image_thumbnail': fields.string({
             "label":'Banner Image Thumbnail',
             "required":true,
             "errorAfterField":true,
-            // widget: widgets.hidden()
+            widget: widgets.hidden()
         }),
         'url_1': fields.string({
             "label":'Game Image 1',
@@ -128,12 +128,12 @@ const create_game_form=(categories, content_tags, platforms)=>{
         'url_1_thumbnail': fields.string({
             "label":'Game Image 1 Thumbnail',
             "required":false,
-            // widget: widgets.hidden()
+            widget: widgets.hidden()
         }),
         'url_2_thumbnail': fields.string({
             "label":'Game Image 2 Thumbnail',
             "required":false,
-            // widget: widgets.hidden()
+            widget: widgets.hidden()
         }),
         'url_3_thumbnail': fields.string({
             "label":'Game Image 3 Thumbnail',

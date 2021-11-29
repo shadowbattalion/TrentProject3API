@@ -2,13 +2,14 @@ const e = require('connect-flash');
 const express = require('express');
 const router = express.Router();
 
+const {auth_check_api} = require('../../middleware')
 const {get_cart_for_user} = require('../../services/cart')
 const {add_to_order_service} = require('../../services/order')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
 
-router.get('/', async (req, res) => {
+router.get('/', [auth_check_api], async (req, res) => {
     
     try{
         //get all the items from the cart

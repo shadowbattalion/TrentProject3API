@@ -71,7 +71,7 @@ async function clear_user_cart_dal(user_id){
         require:true
     })
 
-    console.log(cart.toJSON())
+  
     for(let item of cart){
 
         await item.destroy()

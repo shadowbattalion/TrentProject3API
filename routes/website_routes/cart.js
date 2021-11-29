@@ -10,7 +10,7 @@ router.get('/', [auth_check], async (req, res) => {
 
     let cart_games = await get_cart_for_user(req.session.user.id)
     let total = await calculate_total(req.session.user.id)
-    console.log(cart_games.toJSON())
+    
     res.render('cart/index',{
             'cart_games': cart_games.toJSON(),
             total

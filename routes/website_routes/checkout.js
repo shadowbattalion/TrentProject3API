@@ -2,27 +2,28 @@ const e = require('connect-flash');
 const express = require('express');
 const router = express.Router();
 
+const {auth_check} = require('../../middleware')
 const {get_cart_for_user} = require('../../services/cart')
 const {add_to_order_service} = require('../../services/order')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
 
-router.get('/', async (req, res) => {
+router.get('/', [auth_check], async (req, res) => {
     
     try{
-        //get all the items from the cart
+        
         let games_in_cart =  await get_cart_for_user(req.session.user.id)
         
-        //create line items from user's shopping cart
+        
         let line_items_list=[]
         let meta=[]
 
-        //push in user_id first
+        
         meta.push({
             'user_id':req.session.user.id
         })
-        //then group the game and its quantity into dictionary
+        
         let game_quantity = []
         for(let cart_game of games_in_cart){
 
