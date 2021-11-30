@@ -10,7 +10,8 @@ const {
     get_order_collection_service, 
     search_service, get_order_service, 
     get_order_and_update_status_service, 
-    get_order_delete_service
+    get_order_delete_service,
+    get_user_order_service
 }  = require('../../services/order')
 
 
@@ -64,6 +65,25 @@ router.get('/', [auth_check], async(req,res)=>{
 })
 
 
+router.get('/user-orders', [auth_check], async(req,res)=>{
+
+
+    let user_id = req.session.user.id
+    
+    let user_orders = await get_user_order_service(user_id)
+
+    console.log(user_orders)
+
+       
+        res.render('orders/user-orders', {
+            'user_orders':user_orders,
+           
+        })
+    
+
+
+
+})
 
 
 

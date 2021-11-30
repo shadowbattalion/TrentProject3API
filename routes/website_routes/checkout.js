@@ -33,6 +33,7 @@ router.get('/', [auth_check], async (req, res) => {
             let cost = cart_game.related('game').get('cost')
             let discount = cart_game.related('game').get('discount')
             let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
+            
 
             // console.log("========================")
             // console.log(cart_game.related('game').get('title'))
@@ -55,7 +56,8 @@ router.get('/', [auth_check], async (req, res) => {
 
             game_quantity.push({
                 'game_id':cart_game.related('game').get('id'),
-                'quantity':cart_game.get('quantity') 
+                'quantity':cart_game.get('quantity'),
+                'subtotal': cart_game.get('sub_total'),
             })
 
 
@@ -67,7 +69,7 @@ router.get('/', [auth_check], async (req, res) => {
         meta.push(game_quantity)
 
         let meta_JSON = JSON.stringify(meta)
-        let url = "https://3004-coral-krill-cl3xgfmb.ws-prod-ws-us19.gitpod.io"
+        
         
         let payment = {
             'payment_method_types':['card'],
@@ -122,6 +124,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
             if(outcome){
                 console.log("Orders recorded")                
             } else {
+                
                 console.log("Orders fail")               
             }
 

@@ -19,6 +19,25 @@ async function fetch_order_collection_dal(retreive_search){
 
 }
 
+
+async function get_user_order_dal(user_id){
+    console.log(user_id)
+    const user_orders = await Order.where({
+        user_id
+    }).fetchAll({
+        require:true,
+        withRelated:['user','order_items.game']
+    })
+
+    return user_orders
+
+
+}
+
+
+
+
+
 async function find_orders_dal(order_id){
     const order = await Order.where({
         'id':order_id
@@ -47,15 +66,16 @@ async function add_user_to_order_dal(payment_method, status, total, date, user_i
 
 
 
-async function add_items_to_orderItems_dal(order_id, game_id, quantity){
+async function add_items_to_orderItems_dal(order_id, game_id, quantity, subtotal){
 
-
+    
     let order_item = new OrderItem({
         order_id, 
         game_id, 
-        quantity
+        quantity,
+        sub_total:subtotal
     })
-
+    
     await order_item.save()
     return order_item
 
@@ -110,5 +130,6 @@ module.exports = {
     add_user_to_order_dal, 
     add_items_to_orderItems_dal, 
     clear_user_cart_dal,
-    get_all_games_unpaid_order_dal
+    get_all_games_unpaid_order_dal,
+    get_user_order_dal
 }

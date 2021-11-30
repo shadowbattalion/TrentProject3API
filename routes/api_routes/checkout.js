@@ -55,7 +55,8 @@ router.get('/', [auth_check_api], async (req, res) => {
 
             game_quantity.push({
                 'game_id':cart_game.related('game').get('id'),
-                'quantity':cart_game.get('quantity') 
+                'quantity':cart_game.get('quantity'),
+                'subtotal': cart_game.get('sub_total'),
             })
 
 
@@ -67,9 +68,8 @@ router.get('/', [auth_check_api], async (req, res) => {
         meta.push(game_quantity)
 
         let meta_JSON = JSON.stringify(meta)
-        let url = "https://3004-coral-krill-cl3xgfmb.ws-us17.gitpod.io"
-        console.log(process.env.STRIPE_SUCCESS_URL)
-        console.log(process.env.STRIPE_ERROR_URL)
+        
+       
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,

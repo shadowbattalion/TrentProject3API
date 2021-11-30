@@ -2,7 +2,9 @@ const {
     get_order_collection_dal, 
     fetch_order_collection_dal, 
     find_orders_dal, add_user_to_order_dal, 
-    add_items_to_orderItems_dal, clear_user_cart_dal
+    add_items_to_orderItems_dal, 
+    clear_user_cart_dal,
+    get_user_order_dal
 } = require('../dal/order')
 
 
@@ -63,6 +65,20 @@ async function search_service(form_data, pass_through, retreive_search){
     let orders = await fetch_order_collection_dal(retreive_search)
     
     return dates_converter(orders)
+}
+
+
+async function get_user_order_service(user_id){
+
+    try{
+        let user_orders = await get_user_order_dal(user_id)
+
+        return dates_converter(user_orders)
+    } catch(e) { 
+
+        return null
+
+    }
 }
 
 
@@ -138,6 +154,7 @@ async function add_to_order_service(stripe_sess){
         
         let payment_method = stripe_sess.payment_method_types.join(',')
         let status = stripe_sess.payment_status
+        
 
         let total
 
@@ -157,10 +174,11 @@ async function add_to_order_service(stripe_sess){
         
         //store in orderItems table
         let order_id =  saved_object.attributes.id
+        
         for(let item of game_quantity){
 
     
-            await add_items_to_orderItems_dal(order_id, item.game_id, item.quantity)
+            await add_items_to_orderItems_dal(order_id, item.game_id, item.quantity, item.subtotal)
 
 
         }
@@ -185,5 +203,6 @@ module.exports = {
     search_service, get_order_service,
     get_order_and_update_status_service, 
     get_order_delete_service, 
-    add_to_order_service
+    add_to_order_service,
+    get_user_order_service
 }

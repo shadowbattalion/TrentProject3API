@@ -2,11 +2,6 @@
 
 {{#block 'content'}}
 
-<form method="GET">
-   {{{form}}}
-    <input type="submit" value="Search" class="mb-3 mt-3 btn btn-primary" />
-</form>
-
 <table class="table">
     <thead>
         <tr>
@@ -21,9 +16,10 @@
         </tr>
     </thead>
     <tbody>
-        {{#each orders}}
+        {{#if user_orders}}
+            {{#each user_orders}}
             <tr>
-                 <td>
+                <td>
                     {{this.id}}
                 </td>
                 <td>
@@ -33,7 +29,7 @@
                     {{this.user.display_name}}
                 </td>
                 <td>
-                    <a href="/orders/{{this.id}}/update" class="btn btn-primary btn-sm">{{this.status}}</a>
+                    {{this.status}}
                 </td>
                 <td>
                     <ul>
@@ -51,11 +47,9 @@
                 <td>
                     {{this.date}}
                 </td>
-                <td>
-                    <a href="/orders/{{this.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
-                </td>
             </tr>
-        {{/each}}
+            {{/each}}
+        {{/if}}
     </tbody>
 </table>
 {{/block}}
