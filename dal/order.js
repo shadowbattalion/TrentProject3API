@@ -68,7 +68,7 @@ async function add_user_to_order_dal(payment_method, status, total, date, user_i
 
 async function add_items_to_orderItems_dal(order_id, game_id, quantity, subtotal){
 
-    
+    console.log(order_id, game_id, quantity, subtotal)
     let order_item = new OrderItem({
         order_id, 
         game_id, 
