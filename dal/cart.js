@@ -4,7 +4,9 @@ const get_cart = async (user_id) => {
     return await CartGame.collection()
         .where({
             user_id
-        }).fetch({
+        })
+        .orderBy("id")
+        .fetch({
             require: false,
             withRelated: ['game', 'game.category']
         });
