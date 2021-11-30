@@ -4,7 +4,7 @@ const router = express.Router()
 
 const {Game, Category, ContentTag, Platform, Image, Review} = require('../../models')
 const {bootstrap, create_game_form, create_search_form} = require('../../forms')
-const {auth_check} = require('../../middleware')
+const {auth_check, owner_required} = require('../../middleware')
 const {get_all_games_from_cart_dal}=require('../../dal/cart')
 const {get_all_games_unpaid_order_dal}=require('../../dal/order')
 const {set_delete_flag_dal}=require("../../dal/games")
@@ -180,7 +180,7 @@ router.get('/:game_id/details', [auth_check], async(req,res)=>{
 
 
 
-router.get('/add', [auth_check], async(req,res)=>{
+router.get('/add', [auth_check, owner_required], async(req,res)=>{
 
 
 
@@ -210,7 +210,7 @@ router.get('/add', [auth_check], async(req,res)=>{
 })
 
 
-router.post('/add', [auth_check], async(req,res)=>{
+router.post('/add', [auth_check, owner_required], async(req,res)=>{
 
 
     const categories = await Category.fetchAll().map((category) => {
@@ -293,7 +293,7 @@ router.post('/add', [auth_check], async(req,res)=>{
 
 
 
-router.get('/:game_id/update', [auth_check], async(req,res)=>{
+router.get('/:game_id/update', [auth_check, owner_required], async(req,res)=>{
 
     const game_id = req.params.game_id
 
@@ -396,7 +396,7 @@ async function filtering(ids, main_table, main_table_column, table){
 }
 
 
-router.post('/:game_id/update', [auth_check], async(req,res)=>{
+router.post('/:game_id/update', [auth_check, owner_required], async(req,res)=>{
 
 
     const game_id = req.params.game_id
@@ -513,7 +513,7 @@ router.post('/:game_id/update', [auth_check], async(req,res)=>{
 })
 
 
-router.get('/:game_id/delete', [auth_check], async(req,res)=>{
+router.get('/:game_id/delete', [auth_check, owner_required], async(req,res)=>{
 
 
     const game_id = req.params.game_id
@@ -531,7 +531,7 @@ router.get('/:game_id/delete', [auth_check], async(req,res)=>{
 
 
 
-router.post('/:game_id/delete', [auth_check], async(req,res)=>{
+router.post('/:game_id/delete', [auth_check,owner_required], async(req,res)=>{
 
 
     const game_id = req.params.game_id

@@ -13,7 +13,9 @@ router.get('/', [auth_check], async (req, res) => {
     
     try{
         
-        let games_in_cart =  await get_cart_for_user(req.session.user.id)
+        let [games_in_cart, total] =  await get_cart_for_user(req.session.user.id)
+        
+        // console.log(games_in_cart)
         
         
         let line_items_list=[]
@@ -29,11 +31,12 @@ router.get('/', [auth_check], async (req, res) => {
 
             
         
-
-            let cost = cart_game.related('game').get('cost')
-            let discount = cart_game.related('game').get('discount')
+            let title = cart_game.game.title
+            let quantity = parseInt(cart_game.quantity)
+            let cost = parseFloat(cart_game.game.cost)
+            let discount = parseFloat(cart_game.game.discount)
             let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
-            
+            let sub_total = (((cost)*(1-discount/100)).toFixed(2))*quantity
 
             // console.log("========================")
             // console.log(cart_game.related('game').get('title'))
@@ -42,22 +45,22 @@ router.get('/', [auth_check], async (req, res) => {
             // console.log(cost_after_discount)
 
             const line_item={
-                'name':cart_game.related('game').get('title'),
+                'name':title,
                 'amount':cost_after_discount,
-                'quantity':cart_game.get('quantity'),
+                'quantity':quantity,
                 'currency':'SGD'
             }
-            if(cart_game.related('game').get('banner_image')){
-                line_item['images']=[cart_game.related('game').get('banner_image')]
+            if(cart_game.game.banner_image){
+                line_item['images']=[cart_game.game.banner_image]
             }
             line_items_list.push(line_item)
 
 
 
             game_quantity.push({
-                'game_id':cart_game.related('game').get('id'),
-                'quantity':cart_game.get('quantity'),
-                'subtotal': cart_game.get('sub_total'),
+                'game_id':cart_game.game.id,
+                'quantity':quantity,
+                'sub_total': sub_total
             })
 
 

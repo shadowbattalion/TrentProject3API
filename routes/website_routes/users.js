@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 const { User } = require('../../models')
 const {bootstrap, create_user_reg_form, create_login_form} = require('../../forms')
-const {auth_check, credentials_check} = require('../../middleware')
+const {auth_check} = require('../../middleware')
 const password_hash = (password) => {return crypto.createHash('sha256').update(password).digest('base64')}
 
 
@@ -25,7 +25,8 @@ router.post('/user-reg', (req, res) => {
                 "display_name":user_data.display_name,
                 "password":password_hash(user_data.password),
                 "email":user_data.email,
-                "device_specs":user_data.device_specs
+                "device_specs":user_data.device_specs,
+                "user_roles":"owner"
             })
             await user.save();
             req.flash("success_flash", `${user_data.display_name} signed up successfully! Please proceed to login!`);
@@ -90,6 +91,7 @@ router.post('/user-login', (req,res)=>{
                 if (user.get('password') === password_hash(form.data.password)) {
 
                     req.session.user = {
+                        user_roles: user.get('user_roles'),
                         display_name: user.get('display_name'),
                         email: user.get('email'),
                         device_specs: user.get('device_specs'),

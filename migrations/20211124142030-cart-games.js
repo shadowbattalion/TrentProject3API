@@ -18,7 +18,6 @@ exports.up = function(db) {
   return db.createTable('cart_games', {
     id: { type: 'int',  autoIncrement: true, unsigned: true, primaryKey: true},
     quantity: {type: 'int', unsigned:true},
-    sub_total: {type:'real', unsigned:true},
     user_id: {
         type: 'int',
         unsigned: true,

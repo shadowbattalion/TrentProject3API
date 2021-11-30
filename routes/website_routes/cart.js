@@ -8,11 +8,11 @@ const {get_cart_for_user, calculate_total, add_game, remove_game, add_game_quant
 
 router.get('/', [auth_check], async (req, res) => {
 
-    let cart_games = await get_cart_for_user(req.session.user.id)
-    let total = await calculate_total(req.session.user.id)
+    let [cart_game_list, total] = await get_cart_for_user(req.session.user.id)
+    
     
     res.render('cart/index',{
-            'cart_games': cart_games.toJSON(),
+            'cart_games_list': cart_game_list,
             total
     })
 

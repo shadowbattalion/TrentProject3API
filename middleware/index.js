@@ -13,6 +13,19 @@ const auth_check = (req, res, next) => {
 }
 
 
+const owner_required = (req, res, next) => {
+        
+
+    if (req.session.user.user_roles=="owner") {
+        next()
+    } else {
+        req.flash('error_flash', 'Please login as an owner to view page.')
+        res.redirect('/users/user-login')
+    }
+}
+
+
+
 
 const auth_check_api = (req, res, next) => {
     
@@ -75,4 +88,4 @@ const refresh_check_api = (req, res, next) => {
 
 
 
-module.exports = {auth_check, auth_check_api, refresh_check_api}
+module.exports = {auth_check, owner_required, auth_check_api, refresh_check_api}

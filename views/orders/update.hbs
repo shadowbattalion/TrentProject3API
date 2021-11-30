@@ -29,7 +29,7 @@
                 <td>
                     <ul>
                         {{#each order.order_items}}
-                            <li>{{this.game.title}} X {{this.quantity}}</li>
+                            <li>{{this.game.title}} X {{this.quantity}} = ${{this.sub_total}}</li>
                         {{/each}}
                     </ul>
                 </td>

@@ -4,7 +4,7 @@ const router = express.Router()
 
 const {Order, OrderItem, Game } = require('../../models')
 const {bootstrap, create_search_order_form, create_update_order_form} = require('../../forms')
-const {auth_check} = require('../../middleware')
+const {auth_check,owner_required} = require('../../middleware')
 
 const {
     get_order_collection_service, 
@@ -18,7 +18,7 @@ const {
 
 
 
-router.get('/', [auth_check], async(req,res)=>{
+router.get('/', [auth_check, owner_required], async(req,res)=>{
 
     let retreive_search = await get_order_collection_service()
 
@@ -89,7 +89,7 @@ router.get('/user-orders', [auth_check], async(req,res)=>{
 
 
 
-router.get('/:order_id/update', [auth_check], async(req,res)=>{
+router.get('/:order_id/update', [auth_check, owner_required], async(req,res)=>{
 
     const order_id = req.params.order_id
 
@@ -107,7 +107,7 @@ router.get('/:order_id/update', [auth_check], async(req,res)=>{
 
 
 
-router.post('/:order_id/update', [auth_check], async(req,res)=>{
+router.post('/:order_id/update', [auth_check, owner_required], async(req,res)=>{
 
     const update_form = create_update_order_form()
     update_form.handle(req,{
@@ -145,7 +145,7 @@ router.post('/:order_id/update', [auth_check], async(req,res)=>{
 
 
 
-router.get('/:order_id/delete', [auth_check], async(req,res)=>{
+router.get('/:order_id/delete', [auth_check, owner_required], async(req,res)=>{
 
 
     const order_id = req.params.order_id
@@ -158,7 +158,7 @@ router.get('/:order_id/delete', [auth_check], async(req,res)=>{
 })
 
 
-router.post('/:order_id/delete', [auth_check], async(req,res)=>{
+router.post('/:order_id/delete', [auth_check, owner_required], async(req,res)=>{
 
 
     const order_id = req.params.order_id

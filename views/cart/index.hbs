@@ -2,7 +2,7 @@
 
 {{#block 'content'}}
 
-{{#each cart_games}} 
+{{#each cart_games_list}} 
     <div class="card my-3">
         <div class="card-body">
             <h3 class="card-title">{{this.game.title}} x {{this.quantity}} = ${{this.sub_total}}</h3> 
@@ -24,8 +24,8 @@
                 </div>
                 <ul>
                     <li>Category: {{this.game.category.name}}</li>
-                    <li>Cost: {{this.game.cost}}</li>
-                    <li>Discount: {{this.game.discount}}</li>
+                    <li>Cost: ${{this.game.cost}}</li>
+                    <li>Discount: {{this.game.discount}}%</li>
                 </ul>
                 <form method="POST" action="/cart/{{this.game.id}}/delete">
                     <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>

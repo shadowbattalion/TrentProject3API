@@ -20,7 +20,8 @@ exports.up = function(db) {
     email: {type: 'string', length:200},
     display_name: { type: 'string', length:50},
     password: {type: 'string', length:100},
-    device_specs: { type: 'string', length:600}
+    device_specs: { type: 'string', length:600},
+    user_roles:{ type: 'string', length:20}
   })
 
 }

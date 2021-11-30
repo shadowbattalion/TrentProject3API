@@ -178,13 +178,13 @@ async function add_to_order_service(stripe_sess){
         for(let item of game_quantity){
 
     
-            await add_items_to_orderItems_dal(order_id, item.game_id, item.quantity, item.subtotal)
+            await add_items_to_orderItems_dal(order_id, item.game_id, item.quantity, item.sub_total)
 
 
         }
 
         //clear cart
-        console.log(user_id)
+        // console.log(user_id)
         await clear_user_cart_dal(user_id)
 
 
