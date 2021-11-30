@@ -108,65 +108,77 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
     let signature_head = req.headers['stripe-signature']
 
-
-    let evt = null
-
     try{
-        evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
-        console.log(evt.type)
-        
-        if(evt.type == "checkout.session.completed"){
-            let stripe_sess = evt.data.object
+    
+        if(signature_head){
 
-            let outcome = await add_to_order_service(stripe_sess)
+            let evt = null
+
+    
+            evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
+            console.log(evt.type)
             
-            
-            if(outcome){
-                console.log("Orders recorded")                
-            } else {
+            if(evt.type == "checkout.session.completed"){
+                let stripe_sess = evt.data.object
+
+                let outcome = await add_to_order_service(stripe_sess)
                 
-                console.log("Orders fail")               
+                
+                if(outcome){
+                    console.log("Orders recorded")                
+                } else {
+                    
+                    console.log("Orders fail")               
+                }
+
+                res.send({
+                    'received': true
+                })
+
+
+            }
+            if(evt.type == "checkout.session.expired"){
+                let stripe_sess = evt.data.object
+
+                let outcome = await add_to_order_service(stripe_sess)
+                
+                
+                if(outcome){
+                    console.log("Orders recorded")                
+                } else {
+                    console.log("Orders fail")               
+                }
+
+                res.send({
+                    'received': true
+                })
+
+
+
             }
 
-            res.send({
-                'received': true
-            })
 
+            }else{
 
-        }
-        if(evt.type == "checkout.session.expired"){
-            let stripe_sess = evt.data.object
+                res.send({
+                    'error':"An error has occured"
+                })
 
-            let outcome = await add_to_order_service(stripe_sess)
-            
-            
-            if(outcome){
-                console.log("Orders recorded")                
-            } else {
-                console.log("Orders fail")               
             }
 
-            res.send({
-                'received': true
-            })
-
-
-
-        }
-
-
+        
 
     } catch(e) {
 
         res.send({
-            'error':e.message
+            'error':"An error has occured"
         })
 
 
     }
 
 
-    })
+})
 
 
 
