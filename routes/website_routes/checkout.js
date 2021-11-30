@@ -108,7 +108,9 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
     let signature_head = req.headers['stripe-signature']
 
+
     try{
+        console.log(signature_head)
     
         if(signature_head){
 
