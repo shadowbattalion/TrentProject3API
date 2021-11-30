@@ -134,7 +134,7 @@ async function get_order_delete_service(order_id){
 async function add_to_order_service(stripe_sess){
 
     
-    // try{
+    try{
         
         let user_id
         let game_quantity 
@@ -190,9 +190,9 @@ async function add_to_order_service(stripe_sess){
 
 
         return true
-    // } catch(e){
-    //     return false
-    // }
+    } catch(e){
+        return false
+    }
 
 
 }

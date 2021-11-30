@@ -109,8 +109,8 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
     let signature_head = req.headers['stripe-signature']
 
 
-    // try{
-        console.log(signature_head)
+    try{
+        
     
         if(signature_head){
 
@@ -170,14 +170,14 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
         
 
-    // } catch(e) {
+    } catch(e) {
 
-    //     res.send({
-    //         'error':"An error has occured"
-    //     })
+        res.send({
+            'error':"An error has occured"
+        })
 
 
-    // }
+    }
 
 
 })
