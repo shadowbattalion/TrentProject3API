@@ -45,8 +45,8 @@ function date_converter(object){
 async function search_service(form_data, pass_through, retreive_search){
     
     if (pass_through) {
-        retreive_search = retreive_search.query('join', 'users', 'user_id', 'users.id')
-        .where('users.display_name', 'like', '%' + form_data.display_name + '%')
+        retreive_search = retreive_search.orderBy("id").query('join', 'users', 'user_id', 'users.id')
+        .where('users.display_name', 'like', form_data.display_name)
     }
 
 

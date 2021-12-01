@@ -2,13 +2,14 @@ const express = require("express")
 const router = express.Router()
 
 
-const {Order, OrderItem, Game } = require('../../models')
+
 const {bootstrap, create_search_order_form, create_update_order_form} = require('../../forms')
 const {auth_check,owner_required} = require('../../middleware')
 
 const {
     get_order_collection_service, 
-    search_service, get_order_service, 
+    search_service, 
+    get_order_service, 
     get_order_and_update_status_service, 
     get_order_delete_service,
     get_user_order_service
