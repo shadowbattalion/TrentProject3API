@@ -1,7 +1,8 @@
 const {
     get_order_collection_dal, 
     fetch_order_collection_dal, 
-    find_orders_dal, add_user_to_order_dal, 
+    find_orders_dal,
+    add_user_to_order_dal, 
     add_items_to_orderItems_dal, 
     clear_user_cart_dal,
     get_user_order_dal
@@ -45,7 +46,7 @@ function date_converter(object){
 async function search_service(form_data, pass_through, retreive_search){
     
     if (pass_through) {
-        retreive_search = retreive_search.orderBy("id").query('join', 'users', 'user_id', 'users.id')
+        retreive_search = retreive_search.query('join', 'users', 'user_id', 'users.id')
         .where('users.display_name', 'like', form_data.display_name)
     }
 

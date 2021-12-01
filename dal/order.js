@@ -2,7 +2,7 @@ const {Order, OrderItem, CartGame, User} = require('../models');
 
 async function get_order_collection_dal(){
 
-    let orders = await Order.collection()
+    let orders = await Order.collection().orderBy("id")
     return orders
 
 }
