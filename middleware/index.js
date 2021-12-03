@@ -30,7 +30,7 @@ const owner_required = (req, res, next) => {
 const auth_check_api = (req, res, next) => {
     
     const header = req.headers.authorization
-                   
+    console.log("=============================================")               
     console.log(header)
     if (header) {
         
