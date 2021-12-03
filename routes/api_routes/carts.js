@@ -2,12 +2,12 @@ const express =  require('express')
 const router = express.Router()
 
 
-const {get_cart_for_user, calculate_total, add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
+const {get_cart_for_user,  add_game, remove_game, add_game_quantity, subtract_game_quantity} = require('../../services/cart')
 const {auth_check_api} = require('../../middleware')
 
 router.get('/', [auth_check_api], async (req,res)=>{
 
-    let [cart_game_list, total] = await get_cart_for_user(req.session.user.id)
+    let [cart_game_list, total] = await get_cart_for_user(req.user.id)
     
     
    
