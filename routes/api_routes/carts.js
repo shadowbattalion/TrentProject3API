@@ -7,11 +7,12 @@ const {auth_check_api} = require('../../middleware')
 
 router.get('/', [auth_check_api], async (req,res)=>{
 
-    let cart_games = await get_cart_for_user(req.user.id)
-    let total = await calculate_total(req.user.id)
-
+    let [cart_game_list, total] = await get_cart_for_user(req.session.user.id)
+    
+    
+   
     res.json({
-        cart_games,
+        'cart_games_list': cart_game_list,
         total
     })
     
