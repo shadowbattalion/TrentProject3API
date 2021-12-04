@@ -114,8 +114,7 @@ router.post('/user-logout', [refresh_check_api], async (req,res)=>{
 
 
 router.get('/user-profile', [auth_check_api], (req, res) => {
-    console.log("=================================================")
-    console.log(req.user)
+
     let user = req.user
 
     res.json({
