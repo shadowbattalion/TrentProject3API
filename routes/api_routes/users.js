@@ -19,18 +19,20 @@ function create_token (user, secret_key, expiry){
 router.post('/user-reg', async (req,res)=>{
 
     
-            
-    let user_email = await User.where({
-        'email': req.body.display_name
+    let user_display_name = await User.where({
+        'display_name': req.body.display_name
     }).fetch({
         require:false
     })
 
-    let user_display_name = await User.where({
-        'display_name': req.body.email
+
+    let user_email = await User.where({
+        'email': req.body.email  
     }).fetch({
         require:false
     })
+
+    
   
     
     console.log(user_email, user_display_name)
