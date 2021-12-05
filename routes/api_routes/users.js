@@ -35,7 +35,7 @@ router.post('/user-reg', async (req,res)=>{
     
   
     
-    console.log(req.body.display_name, req.body.password, req.body.email, req.body.device_specs)
+    // console.log(req.body.display_name, req.body.password, req.body.email, req.body.device_specs)
            
     if(user_email || user_display_name){
                 
@@ -45,14 +45,14 @@ router.post('/user-reg', async (req,res)=>{
 
     }else{
          
-        // const user = new User({
-        //     "display_name":req.body.display_name,
-        //     "password":password_hash(req.body.password),
-        //     "email":req.body.email,
-        //     "device_specs":req.body.device_specs,
-        //     "user_roles":"customer",
-        // })
-        // await user.save() 
+        const user = new User({
+            "display_name":req.body.display_name,
+            "password":password_hash(req.body.password),
+            "email":req.body.email,
+            "device_specs":req.body.device_specs,
+            "user_roles":"customer",
+        })
+        await user.save() 
 
         res.json({
             'message':'User registered'
