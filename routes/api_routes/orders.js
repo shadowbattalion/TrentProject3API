@@ -54,7 +54,7 @@ router.get('/user-orders-latest', [auth_check_api], async(req,res)=>{
     console.log(user_orders)
 
      
-    if(user_orders.length!=0){
+    if(user_orders){
         res.json({
             'latest_user_order': user_orders.pop()
         })
