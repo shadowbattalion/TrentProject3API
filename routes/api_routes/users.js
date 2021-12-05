@@ -35,7 +35,7 @@ router.post('/user-reg', async (req,res)=>{
     
   
     
-    // console.log(req.body.display_name, req.body.password, req.body.email, req.body.device_specs)
+    console.log(req.body.display_name, req.body.password, req.body.email, req.body.device_specs)
            
     if(user_email || user_display_name){
                 
