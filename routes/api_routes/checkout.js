@@ -11,7 +11,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 router.get('/', [auth_check_api], async (req, res) => {
     
-    // try{
+    try{
         
         let [games_in_cart, total] =  await get_cart_for_user(req.user.id)
         
@@ -73,14 +73,12 @@ router.get('/', [auth_check_api], async (req, res) => {
 
         let meta_JSON = JSON.stringify(meta)
         
-        console.log(process.env.STRIPE_SUCCESS_API_URL)
-        console.log(process.env.STRIPE_ERROR_API_URL)
         
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,
             'success_url':process.env.STRIPE_SUCCESS_API_URL,
-            'cancel_url':process.env.STRIPE_ERROR_API_URL,
+            'cancel_url':process.env.STRIPE_ERROR_URL,
             'metadata':{
                 'orders':meta_JSON
             }
@@ -98,14 +96,14 @@ router.get('/', [auth_check_api], async (req, res) => {
         // console.log(stripe_sess.url)
         // res.redirect(stripe_sess.url)
 
-    // }catch(e){
+    }catch(e){
 
-    //     res.json({
-    //         "message":false
-    //     }) 
+        res.json({
+            "message":false
+        }) 
 
 
-    // }
+    }
 
 
 })
