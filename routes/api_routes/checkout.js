@@ -73,6 +73,8 @@ router.get('/', [auth_check_api], async (req, res) => {
 
         let meta_JSON = JSON.stringify(meta)
         
+        console.log(process.env.STRIPE_SUCCESS_API_URL)
+        console.log(process.env.STRIPE_ERROR_API_URL)
         
         let payment = {
             'payment_method_types':['card'],
