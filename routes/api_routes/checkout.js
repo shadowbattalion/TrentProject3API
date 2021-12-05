@@ -88,13 +88,13 @@ router.get('/', [auth_check_api], async (req, res) => {
         let stripe_sess = await stripe.checkout.sessions.create(payment)
         
 
-        // res.json({
-        //     "message":true,
-        //     'stripe_url':stripe_sess.url
-        // })
+        res.json({
+            "message":true,
+            'stripe_url':stripe_sess.url
+        })
         
-        console.log(stripe_sess.url)
-        res.redirect(stripe_sess.url)
+        // console.log(stripe_sess.url)
+        // res.redirect(stripe_sess.url)
 
     }catch(e){
 
