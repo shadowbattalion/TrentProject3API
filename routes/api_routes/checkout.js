@@ -78,7 +78,7 @@ router.get('/', [auth_check_api], async (req, res) => {
             'payment_method_types':['card'],
             'line_items':line_items_list,
             'success_url':process.env.STRIPE_SUCCESS_API_URL,
-            'cancel_url':process.env.STRIPE_ERROR_URL,
+            'cancel_url':process.env.STRIPE_ERROR_API_URL,
             'metadata':{
                 'orders':meta_JSON
             }
