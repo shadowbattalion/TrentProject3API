@@ -32,10 +32,15 @@ router.get('/user-orders', [auth_check_api], async(req,res)=>{
 
     console.log(user_orders)
 
-       
-    res.json({
-        'user_orders': user_orders
-    })
+    if(user_orders){
+        res.json({
+            'user_orders': user_orders
+        })
+    } else {
+        res.json({
+            'user_orders': []
+        })
+    }
 
 
 
