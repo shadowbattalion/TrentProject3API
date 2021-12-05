@@ -11,7 +11,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 router.get('/', [auth_check_api], async (req, res) => {
     
-    try{
+    // try{
         
         let [games_in_cart, total] =  await get_cart_for_user(req.user.id)
         
@@ -96,14 +96,14 @@ router.get('/', [auth_check_api], async (req, res) => {
         // console.log(stripe_sess.url)
         // res.redirect(stripe_sess.url)
 
-    }catch(e){
+    // }catch(e){
 
-        res.json({
-            "message":false
-        }) 
+    //     res.json({
+    //         "message":false
+    //     }) 
 
 
-    }
+    // }
 
 
 })
