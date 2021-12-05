@@ -43,4 +43,31 @@ router.get('/user-orders', [auth_check_api], async(req,res)=>{
 
 
 
+
+router.get('/user-orders-latest', [auth_check_api], async(req,res)=>{
+
+
+    let user_id = req.user.id
+    
+    let user_orders = await get_user_order_service(user_id)
+
+    console.log(user_orders)
+
+     
+    if(user_orders.length!=0){
+        res.json({
+            'latest_user_order': user_orders.pop()
+        })
+    } else {
+        res.json({
+            'latest_user_order': ""
+        })
+    }
+
+
+
+})
+
+
+
 module.exports = router
