@@ -97,7 +97,7 @@ async function add_game_quantity(user_id, game_id){
 
 async function subtract_game_quantity(user_id, game_id){
     try{
-        
+        console.log("test=============")
         await subtract_quantity(user_id, game_id, 1)
         return true
     }catch(e){
