@@ -94,8 +94,9 @@ router.get('/', [auth_check_api], async (req, res) => {
 
     }catch(e){
 
-        req.flash("error_flash", "Please add at least one item in the cart")
-        res.redirect('/cart')
+        res.json({
+            "message":false
+        }) 
 
 
     }
