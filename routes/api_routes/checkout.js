@@ -86,11 +86,13 @@ router.get('/', [auth_check_api], async (req, res) => {
         }
 
         let stripe_sess = await stripe.checkout.sessions.create(payment)
-        res.render('checkout/checkout',{
+        
+
+        res.json({
+            "message":true,
             'session_id':stripe_sess.id,
             'publishable_key':process.env.STRIPE_PUBLISHABLE_KEY
-
-        })
+        }) 
 
     }catch(e){
 
