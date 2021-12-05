@@ -83,9 +83,9 @@ router.put('/:game_id/quantity/add', [auth_check_api],  async function(req,res){
 
 router.put('/:game_id/quantity/subtract', [auth_check_api],  async function(req,res){
     
-    let outcome = subtract_game_quantity(req.user.id, req.params.game_id)
+    let outcome = await subtract_game_quantity(req.user.id, req.params.game_id)
 
-    console.log(outcome)
+
     if(outcome){
         res.json({
             "message":outcome
