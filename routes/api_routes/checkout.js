@@ -12,27 +12,31 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 router.get('/', [auth_check_api], async (req, res) => {
     
     try{
-        //get all the items from the cart
-        let games_in_cart =  await get_cart_for_user(req.session.user.id)
         
-        //create line items from user's shopping cart
+        let [games_in_cart, total] =  await get_cart_for_user(req.user.id)
+        
+        // console.log(games_in_cart)
+        
+        
         let line_items_list=[]
         let meta=[]
 
-        //push in user_id first
+        
         meta.push({
-            'user_id':req.session.user.id
+            'user_id':req.user.id
         })
-        //then group the game and its quantity into dictionary
+        
         let game_quantity = []
         for(let cart_game of games_in_cart){
 
             
         
-
-            let cost = cart_game.related('game').get('cost')
-            let discount = cart_game.related('game').get('discount')
-            let cost_after_discount = Math.floor(((cost)*(1-discount/100)))
+            let title = cart_game.game.title
+            let quantity = parseInt(cart_game.quantity)
+            let cost = parseFloat(cart_game.game.cost)
+            let discount = parseFloat(cart_game.game.discount)
+            let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
+            let sub_total = (((cost)*(1-discount/100)).toFixed(2))*quantity
 
             // console.log("========================")
             // console.log(cart_game.related('game').get('title'))
@@ -41,22 +45,22 @@ router.get('/', [auth_check_api], async (req, res) => {
             // console.log(cost_after_discount)
 
             const line_item={
-                'name':cart_game.related('game').get('title'),
+                'name':title,
                 'amount':cost_after_discount,
-                'quantity':cart_game.get('quantity'),
+                'quantity':quantity,
                 'currency':'SGD'
             }
-            if(cart_game.related('game').get('banner_image')){
-                line_item['images']=[cart_game.related('game').get('banner_image')]
+            if(cart_game.game.banner_image){
+                line_item['images']=[cart_game.game.banner_image]
             }
             line_items_list.push(line_item)
 
 
 
             game_quantity.push({
-                'game_id':cart_game.related('game').get('id'),
-                'quantity':cart_game.get('quantity'),
-                'subtotal': cart_game.get('sub_total'),
+                'game_id':cart_game.game.id,
+                'quantity':quantity,
+                'sub_total': sub_total
             })
 
 
@@ -69,7 +73,7 @@ router.get('/', [auth_check_api], async (req, res) => {
 
         let meta_JSON = JSON.stringify(meta)
         
-       
+        
         let payment = {
             'payment_method_types':['card'],
             'line_items':line_items_list,
@@ -108,63 +112,78 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
     let signature_head = req.headers['stripe-signature']
 
 
-    let evt = null
-
     try{
-        evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
-        console.log(evt.type)
         
-        if(evt.type == "checkout.session.completed"){
-            let stripe_sess = evt.data.object
+    
+        if(signature_head){
 
-            let outcome = await add_to_order_service(stripe_sess)
+            let evt = null
+
+    
+            evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
+            console.log(evt.type)
             
-            
-            if(outcome){
-                console.log("Orders recorded")                
-            } else {
-                console.log("Orders fail")               
+            if(evt.type == "checkout.session.completed"){
+                let stripe_sess = evt.data.object
+
+                let outcome = await add_to_order_service(stripe_sess)
+                
+                
+                if(outcome){
+                    console.log("Orders recorded")                
+                } else {
+                    
+                    console.log("Orders fail")               
+                }
+
+                res.send({
+                    'received': true
+                })
+
+
+            }
+            if(evt.type == "checkout.session.expired"){
+                let stripe_sess = evt.data.object
+
+                let outcome = await add_to_order_service(stripe_sess)
+                
+                
+                if(outcome){
+                    console.log("Orders recorded")                
+                } else {
+                    console.log("Orders fail")               
+                }
+
+                res.send({
+                    'received': true
+                })
+
+
+
             }
 
-            res.send({
-                'received': true
-            })
 
+            }else{
 
-        }
-        if(evt.type == "checkout.session.expired"){
-            let stripe_sess = evt.data.object
+                res.send({
+                    'error':"An error has occured"
+                })
 
-            let outcome = await add_to_order_service(stripe_sess)
-            
-            
-            if(outcome){
-                console.log("Orders recorded")                
-            } else {
-                console.log("Orders fail")               
             }
 
-            res.send({
-                'received': true
-            })
-
-
-
-        }
-
-
+        
 
     } catch(e) {
 
         res.send({
-            'error':e.message
+            'error':"An error has occured"
         })
 
 
     }
 
 
-    })
+})
 
 
 

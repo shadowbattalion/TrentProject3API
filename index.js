@@ -107,7 +107,8 @@ const website={
 const api = {
   'games_route': require('./routes/api_routes/games'),
   'cart_route': require('./routes/api_routes/carts'),
-  'users_route': require('./routes/api_routes/users')
+  'users_route': require('./routes/api_routes/users'),
+  'checkout_route': require('./routes/api_routes/checkout'),
 }
 
 
@@ -123,6 +124,7 @@ async function main() {
     app.use('/api/list-games', express.json() ,api.games_route)
     app.use('/api/cart', express.json() ,api.cart_route)
     app.use('/api/users', express.json() ,api.users_route)
+    app.use('/api/checkout', express.json() ,api.checkout_route)
 
  
 }
