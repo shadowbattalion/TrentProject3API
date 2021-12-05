@@ -16,6 +16,45 @@ function create_token (user, secret_key, expiry){
 
 
 
+router.post('/user-reg', async (req,res)=>{
+
+    
+            
+    let user_email = await User.where({
+        'email': req.body.display_name
+    }).fetch({
+        require:false
+    })
+
+    let user_display_name = await User.where({
+        'display_name': req.body.email
+    }).fetch({
+        require:false
+    })
+  
+    
+    
+           
+    if(user_email || user_display_name){
+                
+        res.json({
+            'message':'Display name or email already exists'
+        })
+
+    }else{
+                
+        res.json({
+            'message':'User registered'
+        })
+
+
+        }
+            
+
+})
+
+
+
 router.post('/user-login', async (req,res)=>{
 
     
