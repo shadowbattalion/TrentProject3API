@@ -45,13 +45,13 @@ router.post('/user-reg', async (req,res)=>{
 
     }else{
          
-        const user = new User({
-            "display_name":req.body.display_name,
-            "password":password_hash(req.body.password),
-            "email":req.body.email,
-            "device_specs":req.body.device_specs,
-            "user_roles":"customer",
-        })
+        // const user = new User({
+        //     "display_name":req.body.display_name,
+        //     "password":password_hash(req.body.password),
+        //     "email":req.body.email,
+        //     "device_specs":req.body.device_specs,
+        //     "user_roles":"customer",
+        // })
         // await user.save() 
 
         res.json({
