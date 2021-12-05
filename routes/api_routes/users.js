@@ -52,7 +52,7 @@ router.post('/user-reg', async (req,res)=>{
             "device_specs":req.body.device_specs,
             "user_roles":"customer",
         })
-        // await user.save()
+        await user.save() 
 
         res.json({
             'message':'User registered'
