@@ -98,10 +98,10 @@ const website={
   "home_route" : require('./routes/website_routes/home'),
   "games_route" : require('./routes/website_routes/games'),
   "users_route" : require('./routes/website_routes/users'),
-  "cloudinary_routes" : require('./routes/website_routes/cloudinary'),
-  "cart_routes" : require('./routes/website_routes/cart'),
-  "checkout_routes" : require('./routes/website_routes/checkout'),
-  "order_routes" : require('./routes/website_routes/orders'),
+  "cloudinary_route" : require('./routes/website_routes/cloudinary'),
+  "cart_route" : require('./routes/website_routes/cart'),
+  "checkout_route" : require('./routes/website_routes/checkout'),
+  "order_route" : require('./routes/website_routes/orders'),
 }
 
 const api = {
@@ -109,6 +109,7 @@ const api = {
   'cart_route': require('./routes/api_routes/carts'),
   'users_route': require('./routes/api_routes/users'),
   'checkout_route': require('./routes/api_routes/checkout'),
+  'order_route' : require('./routes/api_routes/orders'),
 }
 
 
@@ -117,14 +118,15 @@ async function main() {
     app.use('/', website.home_route)
     app.use('/list-games', website.games_route)
     app.use('/users', website.users_route)
-    app.use('/cldnry', website.cloudinary_routes)
-    app.use('/cart', website.cart_routes)
-    app.use('/checkout', website.checkout_routes)
-    app.use('/orders', website.order_routes)
+    app.use('/cldnry', website.cloudinary_route)
+    app.use('/cart', website.cart_route)
+    app.use('/checkout', website.checkout_route)
+    app.use('/orders', website.order_route)
     app.use('/api/list-games', express.json() ,api.games_route)
     app.use('/api/cart', express.json() ,api.cart_route)
     app.use('/api/users', express.json() ,api.users_route)
     app.use('/api/checkout', express.json() ,api.checkout_route)
+    app.use('/api/order', express.json() ,api.order_route)
 
  
 }
