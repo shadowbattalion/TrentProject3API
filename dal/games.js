@@ -1,13 +1,18 @@
 const {Game} = require('../models')
 
 
-async function get_all_games_dal(title){
-    console.log(title)
+async function get_all_games_dal(company_name, title){
+   
     let games = Game.collection()
 
     if(title){
         games = games.where('title', 'like', "%"+title+"%")
     }
+
+    if (company_name) {
+        retreive_search = retreive_search.where('company_name', 'like', company_name);
+    }
+
     games = games.where({'delete':0})
     
     
