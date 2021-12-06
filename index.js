@@ -20,6 +20,8 @@ app.set("view engine", "hbs")
 wax.on(hbs.handlebars);
 wax.setLayoutPath("./views/layouts")
 
+// css
+app.use(express.static(__dirname + '/public'))
 
 //middlewares
 //Static Files

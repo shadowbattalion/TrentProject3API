@@ -2,53 +2,77 @@
 
 {{#block 'content'}}
 
-    <ul>
-        <li>ID: {{game.id}}</li>
-        <li>Title: {{game.title}}</li>
-        <li>Cost: {{game.cost}}</li>
-        <li>Discount: {{game.discount}}</li>
-        <li>Description: {{game.description}}</li>
-        <li>Recommended Requirement: {{game.recommended_requirement}}</li>
-        <li>Minimum Requirement: {{game.minimum_requirement}}</li>
-        <li>Banner Image: <img src="{{game.banner_image}}" class="img-fluid"/></li>
-        <li>
-            <ul>
-                {{#each game.images}}
-                <li><img src="{{this.url}}" class="img-fluid"/></li>
-                {{/each}}
-            </ul>        
-        </li>
-        <li>
-            <ul>
-                {{#each game.reviews}}
-                <li>{{this.review}}</li>
-                {{/each}}
-            </ul>        
-        </li>
-        <li>Company Name: {{game.company_name}}</li>
-        <li>Added Date: {{game.added_date}}</li>
-        <li>Released Date: {{game.released_date}}</li>
-        <li>Category: {{game.category.name}}</li>
-        <li>Tags:
+    <div class="mx-auto d-flex flex-row justify-content-center">
+        <a href="/list-games/{{game.id}}/update" class="btn btn-primary btn-sm">Update</a>
+        <a href="/list-games/{{game.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
+        <a href="/list-games" class="btn btn-danger btn-sm">Back</a>
+    </div>
+
+    
+    <div class="card mx-auto" >
+    <img src="{{game.banner_image}}" class="card-img-top" alt="Banner Image">
+    <div class="card-body">
+        <h5 class="card-title">{{game.title}}</h5>
+        <p class="card-text">{{game.description}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Cost: ${{game.cost}}</li>
+        <li class="list-group-item">Discount: {{game.discount}}%</li>
+        <li class="list-group-item">Company Name: {{game.company_name}}</li>
+        <li class="list-group-item">Category: {{game.category.name}}</li>
+        <li class="list-group-item">Released Date: {{game.released_date}}</li>
+        <li class="list-group-item">Added Date: {{game.added_date}}</li>
+        <li class="list-group-item">Tags:
             <ul>
                 {{#each game.content_tags}}
                 <li>{{this.name}}</li>
                 {{/each}}
             </ul>
         </li>
-        <li>Platforms:
+        <li class="list-group-item">Platforms:
             <ul>
                 {{#each game.platforms}}
                 <li>{{this.name}}</li>
                 {{/each}}
             </ul>
         </li>
+        <li class="list-group-item"> Reviews:
+            <ul>
+                {{#each game.reviews}}
+                <li>{{this.review}}</li>
+                {{/each}}
+            </ul>        
+        </li>
     </ul>
+    </div>
 
-           
-    <a href="/list-games/{{game.id}}/update" class="btn btn-primary btn-sm">Update</a>
-    <a href="/list-games/{{game.id}}/delete" class="btn btn-danger btn-sm">Delete</a>
-    <a href="/list-games" class="btn btn-danger btn-sm">Back</a>
+    <div class="card mx-auto mt-3" >
+        <div class="card-body">
+            <h5 class="card-title">Recommended Requirement:</h5>
+            <p class="card-text">{{game.recommended_requirement}}</p>
+        </div>
+    </div>
+
+    <div class="card mx-auto mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Minimum Requirement:</h5>
+            <p class="card-text">{{game.minimum_requirement}}</p>
+        </div>
+    </div>
+
+
+    {{#each game.images}}
+    <div class="card mx-auto mt-2" >
+        <img src="{{this.url}}" class="img-fluid"/>
+    </div>
+    {{/each}}
+     
+        
+        
+        
+        
+        
+     
 
 
 {{/block}}
