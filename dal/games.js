@@ -5,8 +5,10 @@ async function get_all_games_dal(title){
     console.log(title)
     let games = Game.collection()
 
+    // `%${title}%`
+
     if(title){
-        games = games.where('title', 'like', `%${title}%`)
+        games = games.where('title', 'like', title)
     }
     // games = games.where({'delete':0})
     
