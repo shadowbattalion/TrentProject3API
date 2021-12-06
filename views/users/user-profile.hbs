@@ -1,13 +1,25 @@
 {{#extends 'base'}}
 
 {{#block 'content'}}
-<h1>User Profile</h1>
-<ul>
-    <li>Username: {{user.display_name}}</li>
-    <li>Email: {{user.email}}</li>  
-</ul>
-<h2>User Device Specifications</h2>
-{{user.device_specs}}
+
+<div class="card mx-auto mt-3" >
+    <div class="card-body">
+        <h5 class="card-title">User Profile:</h5>
+        <p class="card-text">Username: {{user.display_name}}</p>
+        <p class="card-text">Email: {{user.email}}</p>
+    </div>
+</div>
+
+
+<div class="card mx-auto mt-3" >
+    <div class="card-body">
+        <h5 class="card-title">User Device Specifications:</h5>
+        <p class="card-text">{{user.device_specs}}</p>
+    </div>
+</div>
+
+
+
 
 {{/block}}
 

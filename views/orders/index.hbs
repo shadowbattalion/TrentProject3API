@@ -2,11 +2,13 @@
 
 {{#block 'content'}}
 
+<h3>Search</h3>
 <form method="GET">
    {{{form}}}
     <input type="submit" value="Search" class="mb-3 mt-3 btn btn-primary" />
 </form>
 
+<h3>Orders List</h3>
 <table class="table">
     <thead>
         <tr>
@@ -18,6 +20,7 @@
             <th>Total</th>
             <th>Payment Method</th>
             <th>Date, Time</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -58,6 +61,7 @@
         {{/each}}
     </tbody>
 </table>
+<a href="/orders/user-orders" class="btn btn-danger btn-sm">Your Orders</a>
 {{/block}}
 
 {{/extends}}
