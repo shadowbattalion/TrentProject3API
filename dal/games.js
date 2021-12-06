@@ -8,7 +8,7 @@ async function get_all_games_dal(title){
     if(title){
         games = games.where('title', 'like', "%"+title+"%")
     }
-    // games = games.where({'delete':0})
+    games = games.where({'delete':0})
     
     
     games = await games.fetch()
