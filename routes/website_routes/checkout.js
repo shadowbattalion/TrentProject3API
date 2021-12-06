@@ -106,13 +106,12 @@ router.get('/', [auth_check], async (req, res) => {
 router.post('/process_payment',express.raw({type:"application/json"}), async (req,res)=>{
 
 
-    let payload  = req.body
-    let end_point_secret = process.env.STRIPE_ENDPOINT_KEY
-
-    let signature_head = req.headers['stripe-signature']
-
-
     try{
+
+        let payload  = req.body
+        let end_point_secret = process.env.STRIPE_ENDPOINT_KEY
+
+        let signature_head = req.headers['stripe-signature']
         
     
         if(signature_head){
@@ -173,28 +172,39 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
         
 
-    } catch(e) {
+        } catch(e){
 
-        res.send({
-            'error':"An error has occured"
-        })
-
-
-    }
+            res.render('error/error-page')
+    
+        }
 
 
 })
-
 
 
 router.get('/success', (req,res)=>{
-    req.flash("success_flash", "Your order has been proccessed.")  
-    res.redirect('/list-games')
+
+    try{
+        req.flash("success_flash", "Your order has been proccessed.")  
+        res.redirect('/list-games')
+
+    } catch(e){
+
+        res.render('error/error-page')
+
+    }
 })
 
 router.get('/error', (req,res)=>{
-    req.flash("error_flash", "Your order failed. Try to checkout again!")
-    res.redirect('/cart')  
+
+    try{
+        req.flash("error_flash", "Your order failed. Try to checkout again!")
+        res.redirect('/cart')
+    } catch(e){
+
+        res.render('error/error-page')
+
+    }  
 })
 
 
