@@ -2,7 +2,7 @@ const {Game} = require('../models')
 
 
 async function get_all_games_dal(title){
-
+    console.log(title)
     let games = Game.collection()
 
     if(title){
