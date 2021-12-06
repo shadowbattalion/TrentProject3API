@@ -4,9 +4,9 @@ const {
 } = require('../dal/games')
 
 
-async function list_available_games_services(){
+async function list_available_games_services(title){
 
-    return await get_all_games_dal()
+    return await get_all_games_dal(title)
 
 }
 
