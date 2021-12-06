@@ -193,13 +193,13 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
 
 router.get('/success', (req,res)=>{
-    req.flash("success_flash", "Your order has been proccessed.")  
-    res.redirect('/list-games')
+   
+    res.render('checkout/api-checkout-success')
 })
 
 router.get('/error', (req,res)=>{
-    req.flash("error_flash", "Your order failed. Try to checkout again!")
-    res.redirect('/cart')  
+   
+    res.redirect('checkout/api-checkout-failure')  
 })
 
 
