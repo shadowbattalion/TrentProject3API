@@ -11,10 +11,10 @@
     <title>Hello, world!</title>
   </head>
   <body>
-
+    
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">The Merchant Dashboard</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,14 +37,15 @@
                 <li><a class="dropdown-item" href="#">Something else here</a></li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
+            <li>
+              {{#if user_base}}
+                  Welcome, <span><a href="/users/user-profile" class="ml-3 btn btn-primary btn-sm">{{user_base.display_name}}</a></span>
+                  <a href="/users/user-logout" class="ml-3 btn btn-primary btn-sm">Logout</a>
+              {{else}}
+                  <a href="/users/user-login" class="ml-3 btn btn-primary btn-sm">Login</a>
+              {{/if}}
             </li>
           </ul>
-          <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
         </div>
       </div>
     </nav>
@@ -67,12 +68,7 @@
           {{/each}}       
       {{/if}}
 
-      {{#if user_base}}
-          Welcome, <span><a href="/users/user-profile" class="ml-3 btn btn-primary btn-sm">{{user_base.display_name}}</a></span>
-          <a href="/users/user-logout" class="ml-3 btn btn-primary btn-sm">Logout</a>
-      {{else}}
-          <a href="/users/user-login" class="ml-3 btn btn-primary btn-sm">Login</a>
-      {{/if}}
+      
 
 
       {{#block 'content'}}{{/block}}
