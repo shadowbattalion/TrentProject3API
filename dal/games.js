@@ -3,8 +3,10 @@ const {Game} = require('../models')
 
 async function get_all_games_dal(){
 
-    let game = await Game.where({'delete':0}).fetchAll()
-    return game
+    let games = Game.collection()
+
+    // let game = await Game.where({'delete':0}).fetchAll()
+    return games
 }
 
 
