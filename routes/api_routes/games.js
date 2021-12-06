@@ -5,8 +5,8 @@ const {list_available_games_services, list_available_games_details_services} = r
 const {auth_check_api} = require("../../middleware")
 
 router.get('/', [auth_check_api], async (req,res)=>{
-    console.log(req.query.title)
-    let games = await list_available_games_services(req.query.title)
+    
+    let games = await list_available_games_services(req.query.company_name, req.query.title)
 
     res.json({
         games
