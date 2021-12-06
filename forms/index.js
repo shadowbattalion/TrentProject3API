@@ -41,7 +41,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             'validators':[validators.maxlength(50)]
         }),
         'cost': fields.string({
-            "label":'Cost',
+            "label":'Cost ($)',
             "required":true,
             "errorAfterField":true,
             "cssClasses": {
@@ -50,7 +50,7 @@ const create_game_form=(categories, content_tags, platforms)=>{
             'validators':[validate_decimal()]
         }),
         'discount': fields.string({
-            "label":'Discount (in n)',
+            "label":'Discount (%)',
             "required":true,
             "errorAfterField":true,
             "cssClasses": {
