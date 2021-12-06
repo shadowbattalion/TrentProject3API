@@ -2,36 +2,34 @@
 
 {{#block 'content'}}
 
-{{#each cart_games_list}} 
+{{#each cart_games_list}}
+    <h3>Cart</h3> 
     <div class="card my-3">
         <div class="card-body">
-            <h3 class="card-title">{{this.game.title}} x {{this.quantity}} = ${{this.sub_total}}</h3> 
-            <div>
+            <h4 class="card-title">{{this.game.title}} x {{this.quantity}} = ${{this.sub_total}}</h4> 
+            <h4>Cost: ${{this.game.cost}}</h4>
+            <h4>Discount: {{this.game.discount}}%</h4>
+            <div class="d-flex">
+                <div>
+                    <form method="POST" action="/cart/{{this.game.id}}/quantity/subtract">
+                        <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
+                        <input type="submit"  value="-" class="btn btn-primary btn-sm"/>
+                    </form>
+                </div> 
+                <div class="mx-3">
+                    <label>Quantity: {{this.quantity}}</label>
+                </div>
                 <div>
                     <form method="POST" action="/cart/{{this.game.id}}/quantity/add">
                         <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
-                        <input type="submit"  value="+" class="btn btn-primary"/>
+                        <input type="submit"  value="+" class="btn btn-primary btn-sm"/>
                     </form>
-                    <label>Quantity</label>
-                    <input type="text" value="{{this.quantity}}"/>
-                    <form method="POST" action="/cart/{{this.game.id}}/quantity/subtract">
-                        <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
-                        <input type="submit"  value="-" class="btn btn-primary"/>
-                    </form>     
-                </div>
-                <div>
-                    {{this.game.description}}
-                </div>
-                <ul>
-                    <li>Category: {{this.game.category.name}}</li>
-                    <li>Cost: ${{this.game.cost}}</li>
-                    <li>Discount: {{this.game.discount}}%</li>
-                </ul>
-                <form method="POST" action="/cart/{{this.game.id}}/delete">
-                    <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
-                    <input type="submit" value="Remove" class="btn btn-danger"/>
-                </form>    
+                </div>        
             </div>
+            <form method="POST" action="/cart/{{this.game.id}}/delete">
+                <input type="hidden" name="_csrf" value="{{../this.csrf}}"/>
+                <input type="submit" value="Remove" class="btn btn-danger"/>
+            </form>    
         </div>
     </div>
 
