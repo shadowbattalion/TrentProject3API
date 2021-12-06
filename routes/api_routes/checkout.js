@@ -199,7 +199,7 @@ router.get('/success', (req,res)=>{
 
 router.get('/error', (req,res)=>{
    
-    res.redirect('checkout/api-checkout-failure')  
+    res.render('checkout/api-checkout-failure')  
 })
 
 
