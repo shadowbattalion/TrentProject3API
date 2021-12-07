@@ -163,20 +163,20 @@ router.post('/user-logout', [refresh_check_api], async (req,res)=>{
 
  
  
-router.get('/user-profile', [auth_check_api], async (req,res) => {
+router.get('/user-profile', [auth_check_api],  (req,res) => {
 
     
-    let user = await User.where({
-        'id': req.user.id
-    }).fetch({
-        require:false
-    })
+    // let user = await User.where({
+    //     'id': req.user.id
+    // }).fetch({
+    //     require:false
+    // })
 
     console.log(user)
 
     if(user){
         res.json({
-            "user":user
+            "user":req.user
         }) 
     } else {
         res.json({
