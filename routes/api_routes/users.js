@@ -172,9 +172,9 @@ router.get('/user-profile', [auth_check_api],  (req,res) => {
     //     require:false
     // })
 
-    console.log(user)
+    // console.log(user)
 
-    if(user){
+    if(true){
         res.json({
             "user":req.user
         }) 
