@@ -28,12 +28,12 @@ router.get('/', [auth_check], async(req,res)=>{
 
 
         const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
-            return [content_tag.get('id'), content_tag.get('name')]
+            return [content_tag.get('id'), content_tag.get('content_name')]
         })
 
 
         const platforms = await Platform.fetchAll().map((platform) =>{
-            return [platform.get('id'), platform.get('name')]
+            return [platform.get('id'), platform.get('platform_name')]
         })
         
         
@@ -194,11 +194,11 @@ router.get('/add', [auth_check, owner_required], async(req,res)=>{
         })
         
         const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
-            return [content_tag.get('id'), content_tag.get('name')]
+            return [content_tag.get('id'), content_tag.get('content_name')]
         })
         
         const platforms = await Platform.fetchAll().map((platform) => {
-            return [platform.get('id'), platform.get('name')]
+            return [platform.get('id'), platform.get('platform_name')]
         })
 
 
@@ -229,11 +229,11 @@ router.post('/add', [auth_check, owner_required], async(req,res)=>{
         })
 
         const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
-            return [content_tag.get('id'), content_tag.get('name')]
+            return [content_tag.get('id'), content_tag.get('content_name')]
         })
 
         const platforms = await Platform.fetchAll().map((platform) => {
-            return [platform.get('id'), platform.get('name')]
+            return [platform.get('id'), platform.get('platform_name')]
         })
 
 
@@ -326,11 +326,11 @@ router.get('/:game_id/update', [auth_check, owner_required], async(req,res)=>{
         })
 
         const content_tags = await ContentTag.fetchAll().map((content_tag) =>{
-            return [content_tag.get('id'), content_tag.get('name')]
+            return [content_tag.get('id'), content_tag.get('content_name')]
         })
 
         const platforms = await Platform.fetchAll().map((platform) => {
-            return [platform.get('id'), platform.get('name')]
+            return [platform.get('id'), platform.get('platform_name')]
         })
         
 
@@ -437,11 +437,11 @@ router.post('/:game_id/update', [auth_check, owner_required], async(req,res)=>{
         })
 
         const content_tags = await ContentTag.fetchAll().map((content_tag) => {
-            return [content_tag.get('id'), content_tag.get('name')]
+            return [content_tag.get('id'), content_tag.get('content_name')]
         })
 
         const platforms = await Platform.fetchAll().map((platform) => {
-            return [platform.get('id'), platform.get('name')]
+            return [platform.get('id'), platform.get('platform_name')]
         })
 
 
