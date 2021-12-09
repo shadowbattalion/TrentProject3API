@@ -105,7 +105,7 @@ router.get('/', [auth_check], async(req,res)=>{
 
 
                 if (form.data.company_name) {
-                    retreive_search = retreive_search.where('company_name', 'like', form.data.company_name);
+                    retreive_search = retreive_search.where('company_name', 'like', "%"+form.data.company_name+"%");
                 }
 
                 
