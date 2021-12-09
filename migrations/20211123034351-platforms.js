@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return  db.createTable('platforms', {
     id: { type: 'int', autoIncrement:true, primaryKey:true, unsigned:true},
-    name: {type: 'string', length:20},
+    platform_name: {type: 'string', length:20},
   })
 };
 

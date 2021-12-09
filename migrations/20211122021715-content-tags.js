@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return  db.createTable('content_tags', {
     id: { type: 'int', autoIncrement:true, primaryKey:true, unsigned:true},
-    name: {type: 'string', length:50},
+    content_name: {type: 'string', length:50},
   })
 };
 
