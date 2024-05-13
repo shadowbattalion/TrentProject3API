@@ -68,8 +68,6 @@ router.post('/user-reg', async (req,res)=>{
 
 router.post('/user-login', async (req,res)=>{
 
-    
-            
     let user_email = await User.where({
         'email': req.body.display_name_email
     }).fetch({
@@ -81,10 +79,6 @@ router.post('/user-login', async (req,res)=>{
     }).fetch({
         require:false
     })
-  
-    
-    
-           
     if(!user_email && !user_display_name){
                 
         res.json({
