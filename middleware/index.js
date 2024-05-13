@@ -8,7 +8,9 @@ const auth_check = (req, res, next) => {
         next()
     } else {
         req.flash('error_flash', 'Please login first to view this page')
-        res.redirect('/users/user-login')
+        req.session.save(function () { 
+            res.redirect('/users/user-login')
+        })
     }
 }
 
@@ -20,7 +22,9 @@ const owner_required = (req, res, next) => {
         next()
     } else {
         req.flash('error_flash', 'Please login as an owner to view page.')
-        res.redirect('/users/user-login')
+        req.session.save(function () { 
+            res.redirect('/users/user-login')
+        })
     }
 }
 

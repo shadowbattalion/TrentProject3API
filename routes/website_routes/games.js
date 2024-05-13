@@ -283,7 +283,9 @@ router.post('/add', [auth_check, owner_required], async(req,res)=>{
                 }
 
                 req.flash("success_flash", `${game.get('title')} has been added`)
-                res.redirect('/list-games')
+                req.session.save(function () { 
+                    res.redirect('/list-games')
+                })
             },
             "error": async(form)=>{
                 res.render('games/add', {
@@ -519,7 +521,9 @@ router.post('/:game_id/update', [auth_check, owner_required], async(req,res)=>{
 
                 
                 req.flash("success_flash", `${game.get('title')} has been updated`)
-                res.redirect(`/list-games/${game_id}/details`)
+                req.session.save(function () { 
+                    res.redirect(`/list-games/${game_id}/details`)
+                })
             },
             "error": async(form)=>{
                 res.render('games/update', {
@@ -670,8 +674,9 @@ router.post('/:game_id/delete', [auth_check,owner_required], async(req,res)=>{
         
 
         
-        
-        res.redirect('/list-games')
+        req.session.save(function () { 
+            res.redirect('/list-games')
+        })
 
 
 

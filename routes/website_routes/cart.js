@@ -43,8 +43,9 @@ router.get('/:game_id/add', [auth_check], async function(req, res){
                         
                 }
 
-                
-                res.redirect('/list-games')
+                req.session.save(function () { 
+                        res.redirect('/list-games')
+                })
 
         } catch(e){
 
@@ -66,8 +67,9 @@ router.post('/:game_id/delete', [auth_check], async function(req,res){
                 } else {
                         req.flash("error_flash", "Failed to removed from cart")               
                 }
-
-                res.redirect('/cart')
+                req.session.save(function () { 
+                        res.redirect('/cart')
+                })
 
         } catch(e){
 
@@ -92,8 +94,9 @@ router.post('/:game_id/quantity/add', [auth_check],  async function(req,res){
                         req.flash("error_flash", "Fail to add quantity")
 
                 }
-
-                res.redirect("/cart")
+                req.session.save(function () { 
+                        res.redirect("/cart")
+                })
 
         } catch(e){
 
@@ -119,8 +122,9 @@ router.post('/:game_id/quantity/subtract', [auth_check],  async function(req,res
                         req.flash("error_flash", "Fail to add quantity")
 
                 }
-
-                res.redirect("/cart")
+                req.session.save(function () { 
+                        res.redirect("/cart")
+                })
 
         } catch(e){
 

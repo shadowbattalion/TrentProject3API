@@ -38,7 +38,9 @@ router.post('/user-reg', (req, res) => {
                 })
                 await user.save();
                 req.flash("success_flash", `${user_data.display_name} signed up successfully! Please proceed to login!`);
-                res.redirect('/users/user-login')
+                req.session.save(function () { 
+                    res.redirect('/users/user-login')
+                })
             },
             "error": (form) => {
                 res.render('users/user-reg', {
@@ -100,8 +102,9 @@ router.post('/user-login', (req,res)=>{
                 if(!user_email && !user_display_name){
                     
                     req.flash("error_flash", "Authentication Failure. Please try again.")
-                    res.redirect('/users/user-login')
-
+                    req.session.save(function () { 
+                        res.redirect('/users/user-login')
+                    })
                 } else{
                     
                     let user = null
@@ -129,13 +132,12 @@ router.post('/user-login', (req,res)=>{
                           });
                     } else {
                         req.flash("error_flash", "Authentication Failure. Please try again.")
-                        res.redirect('/users/user-login')
+                        req.session.save(function () { 
+                            res.redirect('/users/user-login')
+                                    
+                        })
                     }
-
-
                 }
-
-
             },
             "error": (form) => {
                 req.flash("error_flash", "Authentication Failure. Please try again.")

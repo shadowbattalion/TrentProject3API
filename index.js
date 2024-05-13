@@ -66,7 +66,9 @@ const csrfInstance = csrf()
 app.use(function (err, req, res, next) {
   if (err && err.code == "EBADCSRFTOKEN") {
       req.flash('error_flash', 'The form has expired.');
-      res.redirect('back');
+      req.session.save(function () { 
+              res.redirect('back');
+      })
   } else {
       next()
   }
@@ -135,7 +137,7 @@ async function main() {
 
 main()
 
-app.listen(process.env.PORT, () => {
+app.listen(4000, () => {
   console.log("Server has started");
 })
 

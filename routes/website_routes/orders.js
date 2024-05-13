@@ -135,12 +135,16 @@ router.post('/:order_id/update', [auth_check, owner_required], async(req,res)=>{
                 if (outcome){
 
                     req.flash("success_flash", `Order Number ${id} has been updated to ${status}`)
-                    res.redirect('/orders')
+                    req.session.save(function () { 
+                        res.redirect('/orders')
+                    })
 
                 }else{
 
                     req.flash("error_flash", `Order Number ${id} fail to be updated. Please try again.`)
-                    res.redirect('/orders')
+                    req.session.save(function () { 
+                            res.redirect('/orders')
+                    })
 
                 }
                 
@@ -194,12 +198,16 @@ router.post('/:order_id/delete', [auth_check, owner_required], async(req,res)=>{
         if (outcome){
 
             req.flash("success_flash", `Order Number ${id} has been deleted.`)
-            res.redirect('/orders')
+            req.session.save(function () { 
+                res.redirect('/orders')
+            })
 
         }else{
 
             req.flash("error_flash", `Order Number ${id} failed to be deleted`)
-            res.redirect('/orders')
+            req.session.save(function () { 
+                res.redirect('/orders')
+            })
 
         }
     } catch(e){

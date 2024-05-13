@@ -95,7 +95,9 @@ router.get('/', [auth_check], async (req, res) => {
     }catch(e){
 
         req.flash("error_flash", "Please add at least one item in the cart")
-        res.redirect('/cart')
+        req.session.save(function () { 
+            res.redirect('/cart')
+        })
 
 
     }
@@ -185,9 +187,10 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 router.get('/success', (req,res)=>{
 
     try{
-        req.flash("success_flash", "Your order has been proccessed.")  
-        res.redirect('/list-games')
-
+        req.flash("success_flash", "Your order has been proccessed.")
+        req.session.save(function () { 
+            res.redirect('/list-games')
+        })
     } catch(e){
 
         res.render('error/error-page')
@@ -199,7 +202,9 @@ router.get('/error', (req,res)=>{
 
     try{
         req.flash("error_flash", "Your order failed. Try to checkout again!")
-        res.redirect('/cart')
+        req.session.save(function () { 
+            res.redirect('/cart')
+        })
     } catch(e){
 
         res.render('error/error-page')
