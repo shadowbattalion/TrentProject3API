@@ -78,7 +78,7 @@ router.get('/user-login', (req,res)=>{
 router.post('/user-login', (req,res)=>{
 
 
-    try{
+    try{        
         const form=create_login_form()
 
         form.handle(req, {
@@ -115,7 +115,6 @@ router.post('/user-login', (req,res)=>{
                     
 
                     if (user.get('password') === password_hash(form.data.password)) {
-
                         req.session.user = {
                             user_roles: user.get('user_roles'),
                             display_name: user.get('display_name'),
@@ -125,7 +124,9 @@ router.post('/user-login', (req,res)=>{
                         }
 
                         req.flash("success_flash", "Welcome back, " + user.get('display_name'));
-                        res.redirect('/list-games');
+                        req.session.save(function () { 
+                            res.redirect('/list-games');
+                          });
                     } else {
                         req.flash("error_flash", "Authentication Failure. Please try again.")
                         res.redirect('/users/user-login')
@@ -177,7 +178,10 @@ router.get('/user-logout', [auth_check], (req, res) => {
     try{
         req.session.user = null;
         req.flash('success_flash', "Logged out!");
-        res.redirect('/users/user-login');
+        
+        req.session.save(function () { 
+            res.redirect('/users/user-login');
+          });
 
     } catch(e){
 
