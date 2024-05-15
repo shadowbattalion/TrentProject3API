@@ -4,13 +4,11 @@
 
 
 <script src="https://js.stripe.com/v3/"></script>
-<script>
-        
-        let stripe = Stripe('{{publishable_key}}')
+ <script type="text/javascript">
+        var stripe = Stripe('{{ publishableKey }}');
         stripe.redirectToCheckout({
-            'sessionId':'{{session_id}}'
+          sessionId: '{{ sessionId }}'
         })
-
 </script>
 
 

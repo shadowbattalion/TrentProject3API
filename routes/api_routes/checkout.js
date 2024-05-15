@@ -97,7 +97,7 @@ router.get('/', [auth_check_api], async (req, res) => {
         // res.redirect(stripe_sess.url)
 
     }catch(e){
-
+        
         res.json({
             "message":false
         }) 
