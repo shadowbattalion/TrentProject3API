@@ -20,6 +20,13 @@ router.get('/', [auth_check], async (req, res) => {
         // step 1 - create line items
         let lineItems = [];
         let meta = [];
+
+        //save user of current session and cart for recording in orders table
+        meta.push({
+            'user_id':req.session.user.id
+        })
+
+        let game_quantity = []
         for (let cart_game of games_in_cart) {
 
 
@@ -45,13 +52,19 @@ router.get('/', [auth_check], async (req, res) => {
                 lineItem.price_data.product_data.images = [ cart_game.game.banner_image];
             }
             lineItems.push(lineItem);
-            // save the quantity data along with the product id
-            meta.push({
-                'product_id' : cart_game.game.id,
+            
+            
+            game_quantity.push({
+                'game_id': cart_game.game.id,
                 'quantity': quantity,
-                'sub_total':sub_total
+                'sub_total': sub_total
             })
+            
         }
+
+        //then push the game-quantity object into meta
+        //Sample: [{ user_id: 1 },[{ game_id: 4, quantity: 1 },{ game_id: 5, quantity: 1 },{ game_id: 2, quantity: 3 }]]
+        meta.push(game_quantity)
 
         // step 2 - create stripe payment
         let metaData = JSON.stringify(meta);
@@ -109,7 +122,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
                 let stripe_sess = evt.data.object
 
                 let outcome = await add_to_order_service(stripe_sess)
-                
+                console.log(outcome)
                 
                 if(outcome){
                     console.log("Orders recorded")                
@@ -156,7 +169,6 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
         
 
         } catch(e){
-
             res.render('error/error-page')
     
         }
