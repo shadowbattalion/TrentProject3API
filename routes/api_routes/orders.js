@@ -30,7 +30,6 @@ router.get('/user-orders', [auth_check_api], async(req,res)=>{
     
     let user_orders = await get_user_order_service(user_id)
 
-    console.log(user_orders)
 
     if(user_orders){
         res.json({
@@ -56,7 +55,6 @@ router.get('/user-orders-latest', [auth_check_api], async(req,res)=>{
     
     let user_orders = await get_user_order_service(user_id)
 
-    console.log(user_orders)
 
      
     if(user_orders){

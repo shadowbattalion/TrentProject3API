@@ -78,7 +78,6 @@ router.get('/user-orders', [auth_check], async(req,res)=>{
         
         let user_orders = await get_user_order_service(user_id)
 
-        console.log(user_orders)
 
         
             res.render('orders/user-orders', {

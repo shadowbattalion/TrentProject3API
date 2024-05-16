@@ -65,7 +65,6 @@
 
 <script>
 function signature(callback, signature_params){
-    console.log(signature_params)
     axios.get('/cldnry/cldnry-sign',{params:{signature_params}}).then(function(response){callback(response.data)})
 }
 

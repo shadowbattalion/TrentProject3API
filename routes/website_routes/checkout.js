@@ -31,23 +31,23 @@ router.get('/', [auth_check], async (req, res) => {
 
 
 
-        let title = cart_game.game.title
-        let quantity = parseInt(cart_game.quantity)
-        let cost = parseFloat(cart_game.game.cost)
-        let discount = parseFloat(cart_game.game.discount)
-        let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
-        let sub_total = (((cost)*(1-discount/100)).toFixed(2))*quantity
-        const lineItem = {
-                'quantity': quantity,
-                'price_data': {
-                    'currency':'SGD',
-                    'unit_amount': cost_after_discount,
-                    'product_data':{
-                        'name': title,  
+            let title = cart_game.game.title
+            let quantity = parseInt(cart_game.quantity)
+            let cost = parseFloat(cart_game.game.cost)
+            let discount = parseFloat(cart_game.game.discount)
+            let cost_after_discount = Math.floor(((cost*100)*(1-discount/100)))
+            let sub_total = (((cost)*(1-discount/100)).toFixed(2))*quantity
+            const lineItem = {
+                    'quantity': quantity,
+                    'price_data': {
+                        'currency':'SGD',
+                        'unit_amount': cost_after_discount,
+                        'product_data':{
+                            'name': title,  
+                        }
                     }
+        
                 }
-    
-            }
             if (cart_game.game.banner_image) {
                 lineItem.price_data.product_data.images = [ cart_game.game.banner_image];
             }
@@ -87,7 +87,6 @@ router.get('/', [auth_check], async (req, res) => {
         })
 
     }catch(e){
-        console.log(e)
         req.flash("error_flash", "Please add at least one item in the cart")
         req.session.save(function () { 
             res.redirect('/cart')
@@ -169,6 +168,7 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
         
 
         } catch(e){
+            // console.log(e)
             res.render('error/error-page')
     
         }
