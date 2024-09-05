@@ -1,6 +1,3 @@
-
-console.log(process.env.DB_HOST)
-
 const knex = require('knex')({
     client:process.env.DB_DRIVER,
     connection:{
