@@ -1,3 +1,6 @@
+
+console.log(process.env.DB_HOST)
+
 const knex = require('knex')({
     client:process.env.DB_DRIVER,
     connection:{
@@ -5,7 +8,8 @@ const knex = require('knex')({
         password:process.env.DB_PASSWORD,
         database:process.env.DB_DATABASE,
         'host':process.env.DB_HOST,
-        'ssl': true
+        'port':process.env.DB_PORT,
+        // 'ssl': true
 
     }
 
