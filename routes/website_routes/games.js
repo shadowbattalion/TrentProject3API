@@ -618,21 +618,11 @@ router.post('/:game_id/delete', [auth_check,owner_required], async(req,res)=>{
 
     
 
-        // console.log(game_ids)
-        // console.log(game_ids.includes(parseInt(game_id)))
 
         let check_game_id_in_cart = game_ids_in_cart.includes(parseInt(game_id))
         let check_game_id_unpaid_in_order = game_ids_unpaid_in_order.includes(parseInt(game_id))
 
         
-        // console.log(game_id)
-        // console.log(game_ids_in_cart)
-        // console.log(check_game_id_in_cart)
-        // console.log("============================")
-        // console.log(game_id)
-        // console.log(game_ids_unpaid_in_order)
-        // console.log(check_game_id_unpaid_in_order)
-        // console.log("============================")
 
         if(check_game_id_in_cart || check_game_id_unpaid_in_order){
 
@@ -656,15 +646,10 @@ router.post('/:game_id/delete', [auth_check,owner_required], async(req,res)=>{
 
             req.flash("success_flash", `${game.get('title')} has been deleted`)
 
-            console.log(game_id)
-            console.log(game_ids_paid_in_order)
-            console.log(game_ids_paid_in_order.includes(parseInt(game_id)))
             if(game_ids_paid_in_order.includes(parseInt(game_id))){
-                console.log("fake delete")
                 await set_delete_flag_dal(game_id) // if such games is not in customer's cart, and already paid, set delete flag
 
             }else{
-                console.log("delete")
                 await game.destroy();
             }
 

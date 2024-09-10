@@ -90,7 +90,6 @@ router.get('/', [auth_check_api], async (req, res) => {
         
 
     }catch(e){
-        // console.log(e)
         
         res.json({
             "message":false

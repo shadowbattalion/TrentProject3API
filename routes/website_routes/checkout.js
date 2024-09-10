@@ -115,13 +115,11 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
 
     
             evt = stripe.webhooks.constructEvent(payload,signature_head,end_point_secret)
-            console.log(evt.type)
             
             if(evt.type == "checkout.session.completed"){
                 let stripe_sess = evt.data.object
 
                 let outcome = await add_to_order_service(stripe_sess)
-                console.log(outcome)
                 
                 if(outcome){
                     console.log("Orders recorded")                
@@ -168,7 +166,6 @@ router.post('/process_payment',express.raw({type:"application/json"}), async (re
         
 
         } catch(e){
-            // console.log(e)
             res.render('error/error-page')
     
         }

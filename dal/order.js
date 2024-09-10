@@ -21,7 +21,6 @@ async function fetch_order_collection_dal(retreive_search){
 
 
 async function get_user_order_dal(user_id){
-    console.log(user_id)
     const user_orders = await Order.where({
         user_id
     }).fetchAll({
@@ -68,7 +67,6 @@ async function add_user_to_order_dal(payment_method, status, total, date, user_i
 
 async function add_items_to_orderItems_dal(order_id, game_id, quantity, sub_total){
 
-    console.log(order_id, game_id, quantity, sub_total)
     let order_item = new OrderItem({
         order_id, 
         game_id, 
